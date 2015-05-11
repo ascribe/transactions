@@ -4,6 +4,7 @@ Part of the development stack of [ascribe.io](https://www.ascribe.io/)
 
 ## Install
 ```
+pip install -r requirements.txt
 python setup.py install
 ```
 
