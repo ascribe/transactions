@@ -1,4 +1,4 @@
-from distutils.core import setup
+from setuptools import setup
 
 setup(
     name='transactions',
@@ -7,6 +7,7 @@ setup(
     license='',
     author='Rodolphe Marques',
     author_email='rodolphe@ascribe.io',
-    packages=['transactions'],
+    packages=['transactions',
+              'transactions.services'],
     description='transactions: Bitcoin for Humans'
 )
