@@ -2,6 +2,11 @@
 transactions is a small python library to easily create and push transactions to the bitcoin network.
 Part of the development stack of [ascribe.io](https://www.ascribe.io/)
 
+## Install
+```
+python setup.py install
+```
+
 ## Example
 ```python
 from transactions import Transactions

@@ -3,8 +3,8 @@ import pybitcointools
 import requests
 import time
 
-from services.service import BitcoinService
-from utils import bitcoin_to_satoshi
+from transactions.services.service import BitcoinService
+from transactions.utils import bitcoin_to_satoshi
 
 """
 Blockr Service @ btc.blockr.io
