@@ -17,7 +17,7 @@ With transactions all amounts are in satoshi and we currently only support BIP32
 
 ## Documentation
 
-### Transactions(self, service='blockr', testnet=False, username='', password='', host='', port='')
+##### Transactions(self, service='blockr', testnet=False, username='', password='', host='', port='')
 - service: currently supports _blockr_ for blockr.io and and _daemon_ for bitcoin daemon. Defaults to _blockr_
 - testnet: use True if you want to use tesnet. Defaults to False
 - username: username to connect to the bitcoin daemon
@@ -25,11 +25,11 @@ With transactions all amounts are in satoshi and we currently only support BIP32
 - host: host of the bitcoin daemon
 - port: port of the bitcoin daemon
 
-### Transactions.simple_transaction(from_address, to)
+##### Transactions.simple_transaction(from_address, to)
 - from_address: bitcoin address originating the transaction
 - to = tuple of (to_address, amount) or list of tuples [(to_addr1, amount1), (to_addr2, amount2)]. Amounts are in _satoshi_
 
-### Transactions.get(hash, max_transactions=100, min_confirmations=6)
+##### Transactions.get(hash, max_transactions=100, min_confirmations=6)
 - hash: can be a bitcoin address or a transaction id. If its a bitcoin address it will return a list of transactions up to _max_transactions_
 and a list of unspents with confirmed transactions greater or equal to _min_confirmantions_
 
@@ -76,16 +76,16 @@ transactions.get('382639448115e859b0dc4092892bc0921edc8851a2b7adbd7b5ab39ccefb73
    u'type': 1}]}
 ```
 
-### Transactions.sign_transaction(tx_hex, master_password)
+##### Transactions.sign_transaction(tx_hex, master_password)
 - tx_hex: hex transaction to sign
 - master_password: master_password for BIP32 wallets
 
 Currently _transactions_ only supports BIP32 hierarchical deterministic wallets
 
-### Transactions.push(tx_hex_signed)
+##### Transactions.push(tx_hex_signed)
 - tx_hex_signed: hex transaction signed
 
-### Transactions.build_transaction(inputs, outputs):
+##### Transactions.build_transaction(inputs, outputs):
 - inputs: inputs in the form of {'output': 'txid:vout', 'value': amount in satoshi}
 - outputs: outputs in the form of {'address': to_address, 'value': amount in satoshi}
 
