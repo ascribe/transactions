@@ -29,6 +29,9 @@ class Transactions(object):
         elif service == 'blockr':
             self._service = BitcoinBlockrService(testnet)
 
+        self._min_tx_fee = self._service._min_transaction_fee
+        self._dust = self._service._min_dust
+
     def push(self, tx):
         self._service.push_tx(tx)
         return pybitcointools.txhash(tx)
@@ -107,3 +110,8 @@ class Transactions(object):
 
     def _op_return_hex(self, op_return):
         return "6a%x%s" % (len(op_return), op_return.encode('hex'))
+
+    def estimate_fee(self, n_inputs, n_outputs):
+        # estimates transaction fee based on number of inputs and outputs
+        estimated_size = 10 + 148 * n_inputs + 34 * n_outputs
+        return (estimated_size / 1000 + 1) * self._min_tx_fee

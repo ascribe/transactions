@@ -18,8 +18,3 @@ class BitcoinService(object):
     def name(self):
         return self.__class__.__name__
 
-    def estimate_fee(self, n_inputs, n_outputs):
-        # estimates transaction fee based on number of inputs and outputs
-        estimated_size = 10 + 148 * n_inputs + 34 * n_outputs
-        return (estimated_size / 1000 + 1) * self._min_transaction_fee
-
