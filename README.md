@@ -19,6 +19,18 @@ txid = transactions.push(tx_signed)
 print txid
 ```
 
+Transaction with custom op_return
+```python
+from transactions import Transactions
+
+transactions = Transactions(testnet=True)
+tx = transactions.simple_transaction('mqXz83H4LCxjf2ie8hYNsTRByvtfV43Pa7', ('mtWg6ccLiZWw2Et7E5UqmHsYgrAi5wqiov', 600), op_return='HELLOFROMASCRIBE')
+tx_signed = transactions.sign_transaction(tx, "master secret")
+txid = transactions.push(tx_signed)
+print txid
+```
+Check it out [fbbd6407b8fc73169918b2fce7f07aff6a486a241c253f0f8eeb942937fbb970](https://www.blocktrail.com/tBTC/tx/fbbd6407b8fc73169918b2fce7f07aff6a486a241c253f0f8eeb942937fbb970)
+
 With transactions all amounts are in satoshi and we currently only support BIP32 wallets (HD wallets)
 
 ## Documentation
@@ -31,9 +43,10 @@ With transactions all amounts are in satoshi and we currently only support BIP32
 - host: host of the bitcoin daemon
 - port: port of the bitcoin daemon
 
-##### Transactions.simple_transaction(from_address, to)
+##### Transactions.simple_transaction(from_address, to, op_return=None)
 - from_address: bitcoin address originating the transaction
-- to = tuple of (to_address, amount) or list of tuples [(to_addr1, amount1), (to_addr2, amount2)]. Amounts are in _satoshi_
+- to: tuple of (to_address, amount) or list of tuples [(to_addr1, amount1), (to_addr2, amount2)]. Amounts are in _satoshi_
+- op_return: ability to set custom op_return 
 
 ##### Transactions.get(hash, max_transactions=100, min_confirmations=6)
 - hash: can be a bitcoin address or a transaction id. If its a bitcoin address it will return a list of transactions up to _max_transactions_
