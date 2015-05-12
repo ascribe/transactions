@@ -99,7 +99,7 @@ class Transactions(object):
                 balance += unspent['amount']
                 inputs.append(unspent)
                 # update estimated fee
-                fee = self._service.estimate_fee(len(inputs), n_outputs)
+                fee = self.estimate_fee(len(inputs), n_outputs)
         except IndexError:
             raise Exception("Not enough balance in the wallet")
 
