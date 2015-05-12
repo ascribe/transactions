@@ -46,7 +46,7 @@ class Transactions(object):
         if self._service.name == 'BitcoinDaemonService':
             self._service.import_address(address, label, rescan=rescan)
 
-    def simple_transaction(self, from_address, to):
+    def simple_transaction(self, from_address, to, op_return=None, min_confirmations=6):
         # amount in satoshi
         # to is a tuple of (to_address, amount)
         # or a list of tuples [(to_addr1, amount1), (to_addr2, amount2)]
@@ -54,11 +54,17 @@ class Transactions(object):
         to = [to] if not isinstance(to, list) else to
         amount = sum([amount for addr, amount in to])
         n_outputs = len(to) + 1     # change
+        if op_return:
+            n_outputs += 1
 
         # select inputs
-        inputs, change = self._select_inputs(from_address, amount, n_outputs)
+        inputs, change = self._select_inputs(from_address, amount, n_outputs, min_confirmations=min_confirmations)
         outputs = [{'address': to_address, 'value': amount} for to_address, amount in to]
         outputs += [{'address': from_address, 'value': change}]
+
+        #add op_return
+        if op_return:
+            outputs += [{'script': self._op_return_hex(op_return), 'value': 0}]
         tx = self.build_transaction(inputs, outputs)
         return tx
 
@@ -72,10 +78,10 @@ class Transactions(object):
     def sign_transaction(self, tx, master_password):
         return pybitcointools.signall(tx, BIP32Node.from_master_secret(master_password).wif())
 
-    def _select_inputs(self, address, amount, n_outputs=2):
+    def _select_inputs(self, address, amount, n_outputs=2, min_confirmations=6):
         # selects the inputs to fulfill the amount
         # returns a list of inputs and the change
-        unspents = self.get(address)['unspents']
+        unspents = self.get(address, min_confirmations=min_confirmations)['unspents']
         if len(unspents) == 0:
             raise Exception("No spendable outputs found")
 
@@ -98,3 +104,6 @@ class Transactions(object):
         change = change if change > self._dust else 0
 
         return inputs, change
+
+    def _op_return_hex(self, op_return):
+        return "6a%x%s" % (len(op_return), op_return.encode('hex'))
