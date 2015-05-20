@@ -78,8 +78,8 @@ class Transactions(object):
         tx = pybitcointools.mktx(inputs, outputs)
         return tx
 
-    def sign_transaction(self, tx, master_password):
-        return pybitcointools.signall(tx, BIP32Node.from_master_secret(master_password).wif())
+    def sign_transaction(self, tx, master_password, path=''):
+        return pybitcointools.signall(tx, BIP32Node.from_master_secret(master_password).subkey_for_path(path).wif())
 
     def _select_inputs(self, address, amount, n_outputs=2, min_confirmations=6):
         # selects the inputs to fulfill the amount

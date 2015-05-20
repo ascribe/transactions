@@ -95,9 +95,11 @@ transactions.get('382639448115e859b0dc4092892bc0921edc8851a2b7adbd7b5ab39ccefb73
    u'type': 1}]}
 ```
 
-##### Transactions.sign_transaction(tx_hex, master_password)
+##### Transactions.sign_transaction(tx_hex, master_password, path='')
 - tx_hex: hex transaction to sign
 - master_password: master_password for BIP32 wallets
+- path: optional path to the leaf address of the BIP32 wallet. This allows us to retrieve private key for the
+        leaf address if one was used to construct the transaction.
 
 Currently _transactions_ only supports BIP32 hierarchical deterministic wallets
 
