@@ -120,4 +120,5 @@ Pull requests, feedback, suggestions are welcome.
 - Blog: [blog.ascribe.io](http://blog.ascribe.io/)
 - Twitter: [@ascribeIO](https://twitter.com/ascribeIO)
 - Facebook: [ascribeio](https://www.facebook.com/ascribeio)
+- HackerNews: [discuss](https://news.ycombinator.com/item?id=9523592)
 
