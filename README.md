@@ -115,10 +115,12 @@ Pull requests, feedback, suggestions are welcome.
 
 <rodolphe@ascribe.io>
 
-## About ascribe
-- Homepage: [ascribe.io](https://www.ascribe.io/)
-- Blog: [blog.ascribe.io](http://blog.ascribe.io/)
-- Twitter: [@ascribeIO](https://twitter.com/ascribeIO)
-- Facebook: [ascribeio](https://www.facebook.com/ascribeio)
-- HackerNews: [discuss](https://news.ycombinator.com/item?id=9523592)
+## Background
+This was developed by ascribe GmbH as part of the overall ascribe technology stack. http://www.ascribe.io
+
+## Copyright
+
+This code is © 2015 ascribe GmbH.
+
+This code is available for use under the [Creative Commons CC-BY-SA 3.0 license](https://creativecommons.org/licenses/by-sa/3.0/). 
 
