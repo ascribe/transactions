@@ -2,6 +2,7 @@ import json
 import pybitcointools
 import requests
 import time
+from datetime import datetime
 
 from transactions.services.service import BitcoinService
 from transactions.utils import bitcoin_to_satoshi
@@ -66,8 +67,9 @@ class BitcoinBlockrService(BitcoinService):
     def get_transaction(self, txid):
         path = '/tx/info/{}'.format(txid)
         url = self._url + path
-        results = self.make_request(url)
-        return results
+        tx = self.make_request(url)
+        result = self._construct_transaction(tx)
+        return result
 
     def push_tx(self, tx_signed):
         # push transactions requires a post to blockr
@@ -78,4 +80,26 @@ class BitcoinBlockrService(BitcoinService):
         return pybitcointools.txhash(tx_signed)
 
     def _convert_time(self, time_str):
-        return int(time.mktime(time.strptime(time_str, '%Y-%m-%dT%H:%M:%SZ')))
+        """
+        Convert a string representation of the time (as returned by blockr.io api) into unix
+        timestamp
+
+        :param time_utc_str: string representation of the time
+        :return: unix timestamp
+        """
+        dt = datetime.strptime(time_str, "%Y-%m-%dT%H:%M:%SZ")
+        return int(time.mktime(dt.utctimetuple()))
+
+    def _construct_transaction(self, tx):
+        result = {}
+        result.update({'confirmations': tx.get('confirmations', ''),
+                       'time': self._convert_time(tx['time_utc']),
+                       'txid': tx.get('tx', ''),
+                       'vins': [{'txid': vin['vout_tx'], 'n': vin['n'], 'address': vin['address'],
+                                 'value': bitcoin_to_satoshi(float(vin['amount']))} for vin in tx.get('vins', [])],
+                       'vouts': [{'n': vout['n'], 'value': bitcoin_to_satoshi(float(vout['amount'])),
+                                  'asm': vout.get('extras', {}).get('asm', ''),
+                                  'hex': vout.get('extras', {}).get('script', ''),
+                                  'address': vout['address']} for vout in tx.get('vouts', [])]
+                       })
+        return result

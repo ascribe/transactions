@@ -36,18 +36,21 @@ class Transactions(object):
         self._service.push_tx(tx)
         return pybitcointools.txhash(tx)
 
-    def get(self, hash, max_transactions=100, min_confirmations=6):
+    def get(self, hash, account="*", max_transactions=100, min_confirmations=6):
+        # The account parameter is used when using the bitcoind. bitcoind does not provide an easy way to retrieve
+        # transactions for a single address. By using account we can retrieve transactions for addresses in a
+        # specific account
         # hash can be an address or txid of a transaction
         if len(hash) < 64:
-            txs = self._service.list_transactions(hash, max_transactions=max_transactions)
+            txs = self._service.list_transactions(hash, account=account, max_transactions=max_transactions)
             unspents = self._service.list_unspents(hash, min_confirmations=min_confirmations)
             return {'transactions': txs, 'unspents': unspents}
         else:
             return self._service.get_transaction(hash)
 
-    def _import_address(self, address, label="", rescan=False):
+    def import_address(self, address, account="", rescan=False):
         if self._service.name == 'BitcoinDaemonService':
-            self._service.import_address(address, label, rescan=rescan)
+            self._service.import_address(address, account, rescan=rescan)
 
     def simple_transaction(self, from_address, to, op_return=None, min_confirmations=6):
         # amount in satoshi

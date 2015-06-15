@@ -18,8 +18,8 @@ class BitcoinDaemonService(BitcoinService):
 
     @property
     def _url(self):
-        return 'https://%s:%s@%s:%s' % (self._username, self._password,
-                                        self._host, self._port)
+        return 'http://%s:%s@%s:%s' % (self._username, self._password,
+                                       self._host, self._port)
 
     def make_request(self, method, params=[]):
         try:
@@ -28,10 +28,10 @@ class BitcoinDaemonService(BitcoinService):
             return json.loads(r.content)
         except ValueError as e:
             print "Some parameters were wrong, please check the request"
-            raise e
+            raise
         except requests.exceptions.RequestException as e:
             print "Bitcoin service can not be accessed. Check username, password or host"
-            raise e
+            raise
 
     def push_tx(self, tx):
         """
@@ -46,25 +46,25 @@ class BitcoinDaemonService(BitcoinService):
 
         return response
 
-    def import_address(self, address, label, rescan=False):
+    def import_address(self, address, account="*", rescan=False):
         """
         param address = address to import
         param label= account name to use
         """
-        response = self.make_request("importaddress", [address, label, rescan])
+        response = self.make_request("importaddress", [address, account, rescan])
         error = response.get('error')
         if error is not None:
             raise Exception(error)
         return response
 
-    def list_transactions(self, address, max_transactions=200):
-        response = self.make_request("listtransactions", ["*", max_transactions, 0, True])
+    def list_transactions(self, address, account="*", max_transactions=200):
+        response = self.make_request("listtransactions", [account, max_transactions, 0, True])
         error = response.get('error')
         if error is not None:
             raise Exception(error)
 
         results = response.get('result', [])
-        results = [tx for tx in results if tx['address'] == address]
+        results = [tx for tx in results if tx.get('address', '') == address and tx.get('category', '') == 'receive']
 
         out = []
         for tx in results:
@@ -89,9 +89,38 @@ class BitcoinDaemonService(BitcoinService):
                         'confirmations': unspent['confirmations']})
         return out
 
-    def get_transaction(self, txid):
-        response = self.make_request('gettransaction', [txid])
+    def get_raw_transaction(self, txid):
+        response = self.make_request('getrawtransaction', [txid, 1])
         error = response.get('error')
-        if error is not None:
+        if error:
             raise Exception(error)
-        return response.get('result')
+
+        raw_transaction = response.get('result')
+        return raw_transaction
+
+    def get_transaction(self, txid):
+        raw_tx = self.get_raw_transaction(txid)
+        result = self._construct_transaction(raw_tx)
+        return result
+
+    def _get_address_for_vout(self, txid, vout_n):
+        raw_tx = self.get_raw_transaction(txid)
+        return [vout['scriptPubKey']['addresses'][0] for vout in raw_tx['vout'] if vout['n'] == vout_n][0]
+
+    def _get_value_from_vout(self, txid, vout_n):
+        raw_tx = self.get_raw_transaction(txid)
+        return [vout['value'] for vout in raw_tx['vout'] if vout['n'] == vout_n][0]
+
+    def _construct_transaction(self, tx):
+        result = {}
+        result.update({'confirmations': tx.get('confirmations', ''),
+                       'time': tx.get('time', ''),
+                       'txid': tx.get('txid', ''),
+                       'vins': [{'txid': vin['txid'], 'n': vin['vout'], 'value': bitcoin_to_satoshi(self._get_value_from_vout(vin['txid'], vin['vout'])),
+                                 'address': self._get_address_for_vout(vin['txid'], vin['vout'])} for vin in tx.get('vin', [])],
+                       'vouts': [{'n': vout['n'], 'value': bitcoin_to_satoshi(vout['value']),
+                                  'asm': vout['scriptPubKey']['asm'],
+                                  'hex': vout['scriptPubKey']['hex'],
+                                  'address': vout['scriptPubKey'].get('addresses', ['NONSTANDARD'])[0]} for vout in tx.get('vout', [])]
+                       })
+        return result
