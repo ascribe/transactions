@@ -15,6 +15,8 @@ class BitcoinDaemonService(BitcoinService):
         self._password = password
         self._host = host
         self._port = port
+        self._session = requests.Session()
+        self._session.mount('http://', requests.adapters.HTTPAdapter(max_retries=5))
 
     @property
     def _url(self):
@@ -24,7 +26,7 @@ class BitcoinDaemonService(BitcoinService):
     def make_request(self, method, params=[]):
         try:
             data = json.dumps({"jsonrpc": "1.0", "params": params, "id": "", "method": method})
-            r = requests.post(self._url, data=data, headers={'Content-type': 'application/json'}, verify=False)
+            r = self._session.post(self._url, data=data, headers={'Content-type': 'application/json'}, verify=False)
             return json.loads(r.content)
         except ValueError as e:
             print "Some parameters were wrong, please check the request"
