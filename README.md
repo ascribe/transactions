@@ -121,5 +121,5 @@ This was developed by ascribe GmbH as part of the overall ascribe technology sta
 
 This code is © 2015 ascribe GmbH.
 
-This code is available for use under the [Creative Commons CC-BY-SA 3.0 license](https://creativecommons.org/licenses/by-sa/3.0/). 
+Licensed under the Apache License, Version 2.0.
 
