@@ -2,11 +2,11 @@ import pybitcointools
 
 from pycoin.key.BIP32Node import BIP32Node
 
-from services.daemonservice import BitcoinDaemonService
+from services.daemonservice import BitcoinDaemonService, RegtestDaemonService
 from services.blockrservice import BitcoinBlockrService
 
 
-SERVICES = ['daemon', 'blockr']
+SERVICES = ['daemon', 'blockr', 'regtest']
 
 
 class Transactions(object):
@@ -22,12 +22,17 @@ class Transactions(object):
     _dust = 600
 
     def __init__(self, service='blockr', testnet=False, username='', password='', host='', port=''):
+        self.testnet = testnet
+
         if service not in SERVICES:
             raise Exception("Service '{}' not supported".format(service))
         if service == 'daemon':
             self._service = BitcoinDaemonService(username, password, host, port)
         elif service == 'blockr':
             self._service = BitcoinBlockrService(testnet)
+        elif service == 'regtest':
+            self.testnet = True
+            self._service = RegtestDaemonService(username, password, host, port)
 
         self._min_tx_fee = self._service._min_transaction_fee
         self._dust = self._service._min_dust
@@ -82,7 +87,8 @@ class Transactions(object):
         return tx
 
     def sign_transaction(self, tx, master_password, path=''):
-        return pybitcointools.signall(tx, BIP32Node.from_master_secret(master_password).subkey_for_path(path).wif())
+        netcode = 'XTN' if self.testnet else 'BTC'
+        return pybitcointools.signall(tx, BIP32Node.from_master_secret(master_password, netcode=netcode).subkey_for_path(path).wif())
 
     def _select_inputs(self, address, amount, n_outputs=2, min_confirmations=6):
         # selects the inputs to fulfill the amount

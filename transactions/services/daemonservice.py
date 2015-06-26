@@ -126,3 +126,18 @@ class BitcoinDaemonService(BitcoinService):
                                   'address': vout['scriptPubKey'].get('addresses', ['NONSTANDARD'])[0]} for vout in tx.get('vout', [])]
                        })
         return result
+
+
+class RegtestDaemonService(BitcoinDaemonService):
+    """
+    Deamon in regtest mode.
+    This works for Bitcoin core 0.10.1 and earlier with `regtest=1` set in bitcoin.conf
+    this will generate a new block every time a transaction is pushed to the network
+    """
+    # Todo: Check bitcoin core version and set the correct method to generate a new block
+
+    def make_request(self, method, params=[]):
+        response = super(RegtestDaemonService, self).make_request(method, params)
+        if method == 'sendrawtransaction':
+            super(RegtestDaemonService, self).make_request("setgenerate", [True, 1])
+        return response

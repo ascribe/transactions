@@ -103,3 +103,10 @@ class BitcoinBlockrService(BitcoinService):
                                   'address': vout['address']} for vout in tx.get('vouts', [])]
                        })
         return result
+
+    def import_address(self, address, account="*", rescan=False):
+        """
+        param address = address to import
+        param label= account name to use
+        """
+        pass
