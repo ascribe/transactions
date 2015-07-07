@@ -27,12 +27,12 @@ class Transactions(object):
         if service not in SERVICES:
             raise Exception("Service '{}' not supported".format(service))
         if service == 'daemon':
-            self._service = BitcoinDaemonService(username, password, host, port)
+            self._service = BitcoinDaemonService(username, password, host, port, testnet)
         elif service == 'blockr':
             self._service = BitcoinBlockrService(testnet)
         elif service == 'regtest':
             self.testnet = True
-            self._service = RegtestDaemonService(username, password, host, port)
+            self._service = RegtestDaemonService(username, password, host, port, testnet)
 
         self._min_tx_fee = self._service._min_transaction_fee
         self._dust = self._service._min_dust
@@ -54,7 +54,8 @@ class Transactions(object):
             return self._service.get_transaction(hash)
 
     def import_address(self, address, account="", rescan=False):
-        if self._service.name == 'BitcoinDaemonService':
+        if self._service.name.startswith('BitcoinDaemonService') or \
+                self._service.name.startswith('RegtestDaemonService'):
             self._service.import_address(address, account, rescan=rescan)
 
     def simple_transaction(self, from_address, to, op_return=None, min_confirmations=6):

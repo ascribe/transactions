@@ -9,8 +9,8 @@ from transactions.utils import bitcoin_to_satoshi
 
 
 class BitcoinDaemonService(BitcoinService):
-    def __init__(self, username, password, host, port):
-        super(BitcoinDaemonService, self).__init__()
+    def __init__(self, username, password, host, port, testnet=False):
+        super(BitcoinDaemonService, self).__init__(testnet=testnet)
         self._username = username
         self._password = password
         self._host = host

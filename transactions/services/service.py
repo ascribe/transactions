@@ -16,5 +16,6 @@ class BitcoinService(object):
 
     @property
     def name(self):
-        return self.__class__.__name__
+        test_str = 'Testnet' if self.testnet else ''
+        return self.__class__.__name__ + test_str
 
