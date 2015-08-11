@@ -1,6 +1,7 @@
 import pybitcointools
 
 from pycoin.key.BIP32Node import BIP32Node
+from pycoin.encoding import EncodingError
 
 from services.daemonservice import BitcoinDaemonService, RegtestDaemonService
 from services.blockrservice import BitcoinBlockrService
@@ -88,8 +89,16 @@ class Transactions(object):
         return tx
 
     def sign_transaction(self, tx, master_password, path=''):
+        # master_password can be either a master_secret or a wif
         netcode = 'XTN' if self.testnet else 'BTC'
-        return pybitcointools.signall(tx, BIP32Node.from_master_secret(master_password, netcode=netcode).subkey_for_path(path).wif())
+
+        # check if its a wif
+        try:
+            BIP32Node.from_text(master_password)
+            return pybitcointools.signall(tx, master_password)
+        except EncodingError:
+            # if its not get the wif from the master secret
+            return pybitcointools.signall(tx, BIP32Node.from_master_secret(master_password, netcode=netcode).subkey_for_path(path).wif())
 
     def _select_inputs(self, address, amount, n_outputs=2, min_confirmations=6):
         # selects the inputs to fulfill the amount
