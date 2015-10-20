@@ -139,5 +139,5 @@ class RegtestDaemonService(BitcoinDaemonService):
     def make_request(self, method, params=[]):
         response = super(RegtestDaemonService, self).make_request(method, params)
         if method == 'sendrawtransaction':
-            super(RegtestDaemonService, self).make_request("setgenerate", [True, 1])
+            super(RegtestDaemonService, self).make_request("generate", [1])
         return response
