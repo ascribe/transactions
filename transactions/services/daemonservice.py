@@ -16,6 +16,7 @@ class BitcoinDaemonService(BitcoinService):
         self._host = host
         self._port = port
         self._session = requests.Session()
+        self._session.mount('http://', requests.adapters.HTTPAdapter(max_retries=3))
 
     @property
     def _url(self):
@@ -106,12 +107,28 @@ class BitcoinDaemonService(BitcoinService):
         return result
 
     def _get_address_for_vout(self, txid, vout_n):
-        raw_tx = self.get_raw_transaction(txid)
-        return [vout['scriptPubKey']['addresses'][0] for vout in raw_tx['vout'] if vout['n'] == vout_n][0]
+        try:
+            raw_tx = self.get_raw_transaction(txid)
+            return [vout['scriptPubKey']['addresses'][0] for vout in raw_tx['vout'] if vout['n'] == vout_n][0]
+        # TODO: Define exceptions for the daemon error messages
+        # Coinbase transaction?
+        except Exception as e:
+            if e.message == {u'message': u'No information available about transaction', u'code': -5}:
+                return ''
+            else:
+                raise
 
     def _get_value_from_vout(self, txid, vout_n):
-        raw_tx = self.get_raw_transaction(txid)
-        return [vout['value'] for vout in raw_tx['vout'] if vout['n'] == vout_n][0]
+        try:
+            raw_tx = self.get_raw_transaction(txid)
+            return [vout['value'] for vout in raw_tx['vout'] if vout['n'] == vout_n][0]
+        # TODO: Define exceptions for the daemon error messages
+        # Coinbase transaction?
+        except Exception as e:
+            if e.message == {u'message': u'No information available about transaction', u'code': -5}:
+                return 0
+            else:
+                raise
 
     def _construct_transaction(self, tx):
         result = {}
