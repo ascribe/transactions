@@ -1,0 +1,7 @@
+trxs:
+  build: .
+  volumes:
+    - ./transactions:/usr/src/app/transactions
+    - ./tests:/usr/src/app/tests
+    - ./setup.py:/usr/src/app/setup.py
+  command: py.test -v
