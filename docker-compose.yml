@@ -3,5 +3,7 @@ trxs:
   volumes:
     - ./transactions:/usr/src/app/transactions
     - ./tests:/usr/src/app/tests
+    - ./pytest.ini:/usr/src/app/pytest.ini
+    - ./setup.cfg:/usr/src/app/setup.cfg
     - ./setup.py:/usr/src/app/setup.py
   command: py.test -v
