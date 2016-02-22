@@ -7,7 +7,29 @@ to the bitcoin network.
 More information at https://github.com/ascribe/transactions
 
 """
+import io
+import os
+import re
+
 from setuptools import setup
+
+
+def read(*names, **kwargs):
+    with io.open(
+        os.path.join(os.path.dirname(__file__), *names),
+        encoding=kwargs.get('encoding', 'utf8')
+    ) as fp:
+        return fp.read()
+
+
+def find_version(*file_paths):
+    version_file = read(*file_paths)
+    version_match = re.search(
+        r'^__version__ = [\'"]([^\'"]*)[\'"]', version_file, re.M)
+    if version_match:
+        return version_match.group(1)
+    raise RuntimeError('Unable to find version string.')
+
 
 install_requires = [
     'pybitcointools==1.1.15',
@@ -37,7 +59,7 @@ docs_require = [
 
 setup(
     name='transactions',
-    version='0.1',
+    version=find_version('transactions', '__init__.py'),
     url='https://github.com/ascribe/transactions',
     license='Apache Software License',
     author='Rodolphe Marques',
