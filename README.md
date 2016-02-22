@@ -1,4 +1,8 @@
 # transactions: Bitcoin for Humans
+
+[![PyPI](https://img.shields.io/pypi/v/transactions.svg)](https://pypi.python.org/pypi/transactions)
+[![Travis](https://img.shields.io/travis/ascribe/transactions.svg)](https://travis-ci.org/ascribe/transactions)
+
 transactions is a small python library to easily create and push transactions to the bitcoin network.
 
 ## Install
