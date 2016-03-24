@@ -7,8 +7,7 @@ transactions is a small python library to easily create and push transactions to
 
 ## Install
 ```
-pip install -r requirements.txt
-python setup.py install
+pip install transactions
 ```
 
 ## Example
