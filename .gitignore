@@ -1,3 +1,5 @@
 venv/
 *.swp
 *.pyc
+docs/build
+docs/static

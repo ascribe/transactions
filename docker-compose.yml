@@ -1,6 +1,7 @@
 trxs:
   build: .
   volumes:
+    - ./docs:/usr/src/app/docs
     - ./transactions:/usr/src/app/transactions
     - ./tests:/usr/src/app/tests
     - ./pytest.ini:/usr/src/app/pytest.ini
