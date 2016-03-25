@@ -1,5 +1,5 @@
 import json
-import pybitcointools
+import bitcoin
 import requests
 import time
 from datetime import datetime
@@ -77,7 +77,7 @@ class BitcoinBlockrService(BitcoinService):
         url = self._url + path
         payload = {'hex': tx_signed}
         response = requests.post(url, data=payload)
-        return pybitcointools.txhash(tx_signed)
+        return bitcoin.txhash(tx_signed)
 
     def _convert_time(self, time_str):
         """
