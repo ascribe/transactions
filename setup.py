@@ -54,7 +54,9 @@ dev_require = [
 
 docs_require = [
     'Sphinx>=1.3.5',
+    'sphinx-autobuild',
     'sphinxcontrib-napoleon>=0.4.4',
+    'sphinx_rtd_theme',
 ]
 
 setup(

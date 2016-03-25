@@ -23,6 +23,16 @@ class Transactions(object):
     _dust = 600
 
     def __init__(self, service='blockr', testnet=False, username='', password='', host='', port=''):
+        """
+        Args:
+            service (str): currently supports _blockr_ for blockr.io and and _daemon_ for bitcoin daemon. Defaults to _blockr_
+            testnet (bool): use True if you want to use tesnet. Defaults to False
+            username (str): username to connect to the bitcoin daemon
+            password (str): password to connect to the bitcoin daemon
+            hosti (str): host of the bitcoin daemon
+            port (str): port of the bitcoin daemon
+
+        """
         self.testnet = testnet
 
         if service not in SERVICES:
@@ -39,14 +49,31 @@ class Transactions(object):
         self._dust = self._service._min_dust
 
     def push(self, tx):
+        """
+        Args:
+            tx: hex of signed transaction
+        Returns:
+            pushed transaction
+
+        """
         self._service.push_tx(tx)
         return pybitcointools.txhash(tx)
 
     def get(self, hash, account="*", max_transactions=100, min_confirmations=6):
-        # The account parameter is used when using the bitcoind. bitcoind does not provide an easy way to retrieve
-        # transactions for a single address. By using account we can retrieve transactions for addresses in a
-        # specific account
-        # hash can be an address or txid of a transaction
+        """
+        Args:
+            hash: can be a bitcoin address or a transaction id. If it's a
+                bitcoin address it will return a list of transactions up to
+                ``max_transactions`` a list of unspents with confirmed
+                transactions greater or equal to ``min_confirmantions``
+            account (Optional[str]): used when using the bitcoind. bitcoind
+                does not provide an easy way to retrieve transactions for a
+                single address. By using account we can retrieve transactions
+                for addresses in a  specific account
+        Returns:
+            transaction
+
+        """
         if len(hash) < 64:
             txs = self._service.list_transactions(hash, account=account, max_transactions=max_transactions)
             unspents = self._service.list_unspents(hash, min_confirmations=min_confirmations)
@@ -60,10 +87,17 @@ class Transactions(object):
             self._service.import_address(address, account, rescan=rescan)
 
     def simple_transaction(self, from_address, to, op_return=None, min_confirmations=6):
-        # amount in satoshi
-        # to is a tuple of (to_address, amount)
-        # or a list of tuples [(to_addr1, amount1), (to_addr2, amount2)]
+        """
+        Args:
+            from_address (str): bitcoin address originating the transaction
+            to: tuple of ``(to_address, amount)`` or list of tuples ``[(to_addr1, amount1), (to_addr2, amount2)]``. Amounts are in *satoshi*
+            op_return (str): ability to set custom ``op_return``
+            min_confirmations (int): minimal number of required confirmations
 
+        Returns:
+            transaction
+
+        """
         to = [to] if not isinstance(to, list) else to
         amount = sum([amount for addr, amount in to])
         n_outputs = len(to) + 1     # change
@@ -82,6 +116,17 @@ class Transactions(object):
         return tx
 
     def build_transaction(self, inputs, outputs):
+        """
+        Thin wrapper around ``pybitcointools.mktx(inputs, outputs)``
+
+        Args:
+            inputs (dict): inputs in the form of
+                ``{'output': 'txid:vout', 'value': amount in satoshi}``
+            outputs (dict): outputs in the form of
+                ``{'address': to_address, 'value': amount in satoshi}``
+        Returns:
+            transaction
+        """
         # prepare inputs and outputs for pybitcointools
         inputs = [{'output': '{}:{}'.format(input['txid'], input['vout']),
                    'value': input['amount']} for input in inputs]
@@ -89,7 +134,21 @@ class Transactions(object):
         return tx
 
     def sign_transaction(self, tx, master_password, path=''):
-        # master_password can be either a master_secret or a wif
+        """
+        Args:
+            tx: hex transaction to sign
+            master_password: master password for BIP32 wallets. Can be either a
+                master_secret or a wif
+            path (Optional[str]): optional path to the leaf address of the
+                BIP32 wallet. This allows us to retrieve private key for the
+                leaf address if one was used to construct the transaction.
+        Returns:
+            signed transaction
+
+        .. note:: Only BIP32 hierarchical deterministic wallets are currently
+            supported.
+
+        """
         netcode = 'XTN' if self.testnet else 'BTC'
 
         # check if its a wif
