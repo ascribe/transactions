@@ -2,6 +2,7 @@
 
 [![PyPI](https://img.shields.io/pypi/v/transactions.svg)](https://pypi.python.org/pypi/transactions)
 [![Travis](https://img.shields.io/travis/ascribe/transactions.svg)](https://travis-ci.org/ascribe/transactions)
+[![Documentation Status](https://readthedocs.org/projects/transactions/badge/?version=latest)](http://transactions.readthedocs.org/en/latest/?badge=latest)
 
 transactions is a small python library to easily create and push transactions to the bitcoin network.
 
@@ -36,6 +37,8 @@ Check it out [fbbd6407b8fc73169918b2fce7f07aff6a486a241c253f0f8eeb942937fbb970](
 With transactions all amounts are in satoshi and we currently only support BIP32 wallets (HD wallets)
 
 ## Documentation
+
+http://transactions.readthedocs.org/
 
 ##### Transactions(self, service='blockr', testnet=False, username='', password='', host='', port='')
 - service: currently supports _blockr_ for blockr.io and and _daemon_ for bitcoin daemon. Defaults to _blockr_
