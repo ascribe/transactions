@@ -139,18 +139,29 @@ Get details of a transaction between Alice and Bob
 Code
 ====
 
+``transactions`` module
+-----------------------
 .. automodule:: transactions
 
 .. autoclass:: Transactions
     :members: __init__, simple_transaction, get, sign_transaction, push, build_transaction
 
 
-General Details
-===============
+``service`` module
+------------------
+.. automodule:: transactions.services.service
+
+.. autoclass:: BitcoinService
+    :members: __init__
+
+
+More Information
+================
 
 .. toctree::
     :maxdepth: 2
-
+    
+    underthehood
     contributing
     background
     license
