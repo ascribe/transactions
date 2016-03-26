@@ -144,6 +144,7 @@ More Information
     
     code
     underthehood
+    theory
     contributing
     background
     license
