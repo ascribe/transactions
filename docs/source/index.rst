@@ -76,6 +76,10 @@ Get transactions of Alice
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
+    
+    from transactions import Transactions
+    
+    transactions = Transactions(testnet=True)
 
     transactions.get('mhyCaF2HFk7CVwKmyQ8TahgVdjnHSr1pTv')
 
@@ -98,6 +102,10 @@ Get details of a transaction between Alice and Bob
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
+    
+    from transactions import Transactions
+    
+    transactions = Transactions(testnet=True)
 
     transactions.get('382639448115e859b0dc4092892bc0921edc8851a2b7adbd7b5ab39ccefb73ee')
 
