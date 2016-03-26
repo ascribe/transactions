@@ -145,12 +145,13 @@ Code
     :members: __init__, simple_transaction, get, sign_transaction, push, build_transaction
 
 
-General Details
-===============
+More Information
+================
 
 .. toctree::
     :maxdepth: 2
-
+    
+    underthehood
     contributing
     background
     license
