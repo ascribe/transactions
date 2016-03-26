@@ -136,31 +136,13 @@ Get details of a transaction between Alice and Bob
 .. _satoshi: https://en.bitcoin.it/wiki/Satoshi_%28unit%29
 
 
-Code
-====
-
-``transactions`` module
------------------------
-.. automodule:: transactions
-
-.. autoclass:: Transactions
-    :members: __init__, simple_transaction, get, sign_transaction, push, build_transaction
-
-
-``service`` module
-------------------
-.. automodule:: transactions.services.service
-
-.. autoclass:: BitcoinService
-    :members: __init__
-
-
 More Information
 ================
 
 .. toctree::
     :maxdepth: 2
     
+    code
     underthehood
     contributing
     background
