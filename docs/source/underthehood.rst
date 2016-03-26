@@ -1,9 +1,20 @@
+.. _under-the-hood:
+
 ##############
 Under the Hood
 ##############
 
 The intent of this section is to document what goes on under the hood of
 ``transactions``.
+
+We'll use three main "pillars" to organize and present the information:
+
+* :ref:`uth-bitcoin-network`
+* :ref:`uth-bitcoin-addresses`
+* :ref:`uth-bitcoin-transactions`
+
+
+.. _uth-bitcoin-network:
 
 ***************
 Bitcoin Network
@@ -53,9 +64,14 @@ The supported blockchain explorer is `blockr.io`_
 .. todo:: show code examples
 
 
+.. _uth-bitcoin-addresses:
+
 *****************
 Bitcoin Addresses
 *****************
+
+
+.. _uth-bitcoin-transactions:
 
 ********************
 Bitcoin Transactions
