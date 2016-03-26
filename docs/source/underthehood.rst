@@ -13,6 +13,12 @@ We'll use three main "pillars" to organize and present the information:
 * :ref:`uth-bitcoin-addresses`
 * :ref:`uth-bitcoin-transactions`
 
+One additional section will be used to present some key aspects of the
+libraries that ``transactions`` rely on, especially the two bitcoin libraries:
+``pycoin`` and ``pybitcointools``.
+
+* :ref:`libs-transactions`
+
 
 .. _uth-bitcoin-network:
 
@@ -70,12 +76,38 @@ The supported blockchain explorer is `blockr.io`_
 Bitcoin Addresses
 *****************
 
+.. todo:: Show how a bitcoin address is created.
+
+
 
 .. _uth-bitcoin-transactions:
 
 ********************
 Bitcoin Transactions
 ********************
+
+.. todo:: Show the different steps required to publish a transaction in the
+    bitcoin network.
+
+    Lifecycle of a transaction: creation, publishing, confirmation
+
+    * Using ``get`` to fetch a transaction
+    * Using ``push`` to publish a transaction
+
+    Elements of the payload of a transaction
+
+
+.. _libs-transactions:
+
+**********************************
+Libraries used by ``transactions``
+**********************************
+
+.. todo:: Present libraries used; ``requests``, ``pycoin``, ``pybitcointools``
+
+    Dive into the details of how pycoin and pybitcointools are used and work under the hood.
+
+
 
 **********
 References
