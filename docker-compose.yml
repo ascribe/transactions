@@ -1,10 +1,17 @@
-trxs:
-  build: .
-  volumes:
-    - ./docs:/usr/src/app/docs
-    - ./transactions:/usr/src/app/transactions
-    - ./tests:/usr/src/app/tests
-    - ./pytest.ini:/usr/src/app/pytest.ini
-    - ./setup.cfg:/usr/src/app/setup.cfg
-    - ./setup.py:/usr/src/app/setup.py
-  command: py.test -v
+version: '2'
+
+services:
+  tx:
+    build: .
+    volumes:
+      - ./docs:/usr/src/app/docs
+      - ./transactions:/usr/src/app/transactions
+      - ./tests:/usr/src/app/tests
+      - ./pytest.ini:/usr/src/app/pytest.ini
+      - ./setup.cfg:/usr/src/app/setup.cfg
+      - ./setup.py:/usr/src/app/setup.py
+    command: py.test -v
+  
+  bitcoin:
+    image: sbellem/docker-bitcoin 
+    command: bitcoind -regtest -printtoconsole
