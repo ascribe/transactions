@@ -89,10 +89,12 @@ Bitcoin Transactions
 .. todo:: Show the different steps required to publish a transaction in the
     bitcoin network.
 
-    Lifecycle of a transaction: creation, publishing, confirmation
+    Lifecycle of a transaction: creation, signing, publishing, confirmation
 
-    * Using ``get`` to fetch a transaction
+    * Using ``create`` to fetch a transaction
+    * Using ``sign`` to fetch a transaction
     * Using ``push`` to publish a transaction
+    * Using ``get`` to fetch a transaction
 
     Elements of the payload of a transaction
 
