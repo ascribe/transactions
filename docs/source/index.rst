@@ -28,6 +28,7 @@ Contents
     code
     underthehood
     theory
+    practice
     contributing
     background
     license
