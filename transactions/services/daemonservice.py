@@ -36,6 +36,36 @@ class BitcoinDaemonService(BitcoinService):
             print "Bitcoin service can not be accessed. Check username, password or host"
             raise
 
+    def get_help(self):
+        return self.make_request('help')
+
+    def getinfo(self):
+        return self.make_request('getinfo')
+
+    def generate(self, numblocks):
+        """
+        As per bitcoin-cli docs:
+
+        Mine blocks immediately (before the RPC call returns)
+
+        .. note:: this function can only be used on the regtest network
+
+        Args:
+            numblocks (int): How many blocks are generated immediately.
+
+        Returns:
+            blockhashes (List[str]): hashes of blocks generated
+
+        Examples:
+
+            Generate 11 blocks
+                >>> generate(11)
+        """
+        return self.make_request('generate', (numblocks,))
+
+    def getbalance(self):
+        return self.make_request('getbalance')
+
     def push_tx(self, tx):
         """
 
