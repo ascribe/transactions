@@ -10,8 +10,13 @@ services:
       - ./pytest.ini:/usr/src/app/pytest.ini
       - ./setup.cfg:/usr/src/app/setup.cfg
       - ./setup.py:/usr/src/app/setup.py
-    command: py.test -v
-  
+    command: 'true'
+
   bitcoin:
-    image: sbellem/docker-bitcoin 
+    image: sbellem/bitcoin
+    volumes:
+      -  ./.bitcoin:/root/.bitcoin
+    ports:
+      - '18332'
+      - '18333'
     command: bitcoind -regtest -printtoconsole

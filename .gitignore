@@ -1,5 +1,9 @@
+.bitcoin/regtest
+.eggs/
+env/
 venv/
 *.swp
 *.pyc
 docs/build
 docs/static
+transactions.egg-info/
