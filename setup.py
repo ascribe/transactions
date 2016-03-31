@@ -50,6 +50,7 @@ tests_require = [
 dev_require = [
     'ipdb',
     'ipython',
+    'python-bitcoinrpc',
 ]
 
 docs_require = [
