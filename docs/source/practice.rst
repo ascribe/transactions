@@ -1,9 +1,19 @@
-Running a bitcoin node in regtest mode
-======================================
+########
+Practice
+########
 
-bitcoin json rpc
-----------------
-ref: https://en.bitcoin.it/wiki/API_reference_%28JSON-RPC%29
+**************************************
+Running a bitcoin node in regtest mode
+**************************************
+
+.. code-block:: bash
+
+    bitcoind -regtest
+
+Bitcoin clients: bitcoin-cli & json rpc
+=======================================
+
+json rpc ref: https://en.bitcoin.it/wiki/API_reference_%28JSON-RPC%29
 
 * via curl
 * via python with python-bitcoinrpc
@@ -11,44 +21,60 @@ ref: https://en.bitcoin.it/wiki/API_reference_%28JSON-RPC%29
 * via transactions
 
 curl
-^^^^
+----
 
-```bash
-$ curl --user user --data-binary  \
-    '{"jsonrpc": "1.0", "id":"dummy", "method": "getinfo", "params": [] }'  \
-    -H 'content-type: text/plain;' http://127.0.0.1:18332/
+.. code-block:: bash
+
+    $ curl --user user --data-binary  \
+        '{"jsonrpc": "1.0", "id":"dummy", "method": "getinfo", "params": [] }'  \
+        -H 'content-type: text/plain;' http://127.0.0.1:18332/
 
 
-docker
-======
+bitcoin json rpc revisited with docker
+======================================
+We can repeat the same as in the previous section, but this time with some
+parts, and everything dockerized.
+
+We add the twist that:
+
+1. the bitcoin server is running in a container, meanwhile client calls are
+   made from the docker host
+2. the bitcoin server and client are running in separate containers
+
+For 1. and 2. we connect to the bitcoin node:
+
+* via curl
+* via python with python-bitcoinrpc
+* via python with requests
+* via transactions
+
 
 host - container
 ----------------
-
 Running bitcoind in container and making rpc calls to it from the host machine,
 (sender_ip)
 
 given the following ``bitcoin.conf``:
 
-.. code-block::
+.. code-block:: bash
 
     dnsseed=0
     rpcuser=a
     rpcallowip=<sender_ip>
 
 
-.. code-block::
+.. code-block:: bash
 
     docker run --rm --name btc -v ~/.bitcoin-docker:/root/.bitcoin -p <sender_ip>:58332:18332 btc5 bitcoind -regtest -printtoconsole
 
-.. code-block::
+.. code-block:: bash
 
     curl --user a:b --data-binary '{"jsonrpc": "1.0", "id":"", "method": "getinfo", "params": [] }' -H 'content-type: text/plain;' http://<sender_ip>:58332
 
 
-
-Using docker-compose
-====================
+container-container
+-------------------
+We can use docker-compose.
 
 In one shell:
 
@@ -73,7 +99,7 @@ Using the ``CONTAINER ID`` or ``NAME``:
     $ docker exec -it transactions_bitcoin_run_1 bash
     # bitcoin-cli -regtest getinfo
 
-.. code-block::
+.. code-block:: bash
 
     root@94787e1325a3:/# curl --user a:b --data-binary \
         '{"jsonrpc": "1.0", "id":"", "method": "getinfo", "params": [] }' \

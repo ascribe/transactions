@@ -26,9 +26,9 @@ Contents
 
     examples
     code
-    underthehood
     theory
     practice
+    underthehood
     contributing
     background
     license

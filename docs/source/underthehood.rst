@@ -55,60 +55,6 @@ different "`network modes`_":
     *generate* `blocks`_ *on demand for testing events, and can create private*
     `satoshis`_ *with no real-world value.* [#regtest_ref]_
 
-Running a bitcoin node in regtest mode
-======================================
-
-bitcoin json rpc
-----------------
-ref: https://en.bitcoin.it/wiki/API_reference_%28JSON-RPC%29
-
-* via curl
-* via python with python-bitcoinrpc
-* via python with requests
-* via transactions
-
-curl
-^^^^
-
-```bash
-$ curl --user user --data-binary  \
-    '{"jsonrpc": "1.0", "id":"dummy", "method": "getinfo", "params": [] }'  \ 
-    -H 'content-type: text/plain;' http://127.0.0.1:18332/
-
-
-docker
-======
-
-host - container
-----------------
-
-Runnign bitcoind in container and making rpc calls to it from the host machine,
-(sender_ip)
-
-given the following ``bitcoin.conf``:
-
-.. code-block:: bash
-
-    dnsseed=0
-    rpcuser=a
-    rpcallowip=<sender_ip>
-
-
-.. code-block:: bash
-    
-    docker run --rm --name btc -v ~/.bitcoin-docker:/root/.bitcoin -p <sender_ip>:58332:18332 btc5 bitcoind -regtest -printtoconsole
-
-
-.. code-block:: bash
-    
-    curl --user a:b --data-binary '{"jsonrpc": "1.0", "id":"", "method": "getinfo", "params": [] }' -H 'content-type: text/plain;' http://<sender_ip>:58332
-
-
-container-container
--------------------
-Making rpc calls from a container to the bitcoind running in another container.
-
-
 
 Connecting to the Bitcoin Network with ``transactions`` 
 =======================================================

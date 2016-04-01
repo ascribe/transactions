@@ -366,8 +366,8 @@ This model works reasonably well, except for the dependence on a trusted
 authority. In brief:
 
 * The very existence of the chain relies on one central power.
-* The central power can create unlimited amount of coins for themselve.
-* The central power can deny service to whomover they wish by simply ignoring
+* The central power can create unlimited amount of coins for itself.
+* The central power can deny service to whomever it wishes by simply ignoring
   transactions.
 * The central power can require users of the system to pay fees in order for
   their transactions to be considered.
