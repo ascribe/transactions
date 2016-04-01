@@ -10,8 +10,7 @@ services:
       - ./pytest.ini:/usr/src/app/pytest.ini
       - ./setup.cfg:/usr/src/app/setup.cfg
       - ./setup.py:/usr/src/app/setup.py
-    command: 'true'
-
+    command: py.test -v
   bitcoin:
     image: sbellem/bitcoin
     volumes:
