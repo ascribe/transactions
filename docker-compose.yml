@@ -12,7 +12,7 @@ services:
       - ./setup.py:/usr/src/app/setup.py
     command: py.test -v
   bitcoin:
-    image: sbellem/bitcoin
+    image: ascribe/bitcoin
     volumes:
       -  ./.bitcoin:/root/.bitcoin
     ports:
