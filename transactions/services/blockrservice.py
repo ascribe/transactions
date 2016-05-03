@@ -24,7 +24,7 @@ class BitcoinBlockrService(BitcoinService):
         else:
             return 'https://btc.blockr.io/api/v1'
 
-    def make_request(self, url):
+    def make_request(self, url, params=None):
         response = requests.get(url)
         data = json.loads(response.content)
         if data.get('status') != 'success':
@@ -32,11 +32,14 @@ class BitcoinBlockrService(BitcoinService):
                                                           data['message']))
         return data['data']
 
-    def list_transactions(self, address, **kwargs):
+    def list_transactions(self, address, raw=False, **kwargs):
         # blockr returns the last 200 transactions
         path = '/address/txs/{}'.format(address)
         url = self._url + path
         results = self.make_request(url)
+
+        if raw:
+            return results
 
         out = []
         for tx in results['txs']:
@@ -64,19 +67,23 @@ class BitcoinBlockrService(BitcoinService):
                             'confirmations': unspent['confirmations']})
         return out
 
-    def get_transaction(self, txid):
+    def get_transaction(self, txid, raw=False):
         path = '/tx/info/{}'.format(txid)
         url = self._url + path
         tx = self.make_request(url)
+        if raw:
+            return tx
         result = self._construct_transaction(tx)
         return result
 
-    def push_tx(self, tx_signed):
+    def push_tx(self, tx_signed, raw=False):
         # push transactions requires a post to blockr
         path = '/tx/push'
         url = self._url + path
         payload = {'hex': tx_signed}
         response = requests.post(url, data=payload)
+        if raw:
+            return response
         return pybitcointools.txhash(tx_signed)
 
     def _convert_time(self, time_str):
@@ -110,3 +117,44 @@ class BitcoinBlockrService(BitcoinService):
         param label= account name to use
         """
         pass
+
+    def get_balance(self, addresses, confirmations=None):
+        # TODO review
+        if not isinstance(addresses, str):
+            addresses = ','.join(addresses)
+        url = '{}/address/balance/{}'.format(self._url, addresses)
+        # TODO add support for confirmations
+        return self.make_request(url)
+
+    def decode(self, tx):
+        url = self._url + '/tx/decode'
+        data = {'hex': tx}
+        return requests.post(url, data=data)
+
+    def get_block_raw(self, block):
+        """
+        Args:
+            block: block number (eg: 223212)
+                block hash (eg: 0000000000000000210b10d620600dc1cc2380bb58eb2408f9767eb792ed31fa)
+                word "last" - this will always return the latest block
+                word "first" - this will always return the first block
+        Returns:
+            raw block data
+
+        """
+        url = '{}/block/raw/{}'.format(self._url, block)
+        return self.make_request(url)
+
+    def get_block_info(self, block):
+        """
+        Args:
+            block: block number (eg: 223212)
+                block hash (eg: 0000000000000000210b10d620600dc1cc2380bb58eb2408f9767eb792ed31fa)
+                word "last" - this will always return the latest block
+                word "first" - this will always return the first block
+        Returns:
+            basic block data
+
+        """
+        url = '{}/block/info/{}'.format(self._url, block)
+        return self.make_request(url)

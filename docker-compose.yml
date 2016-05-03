@@ -5,6 +5,7 @@ services:
     build: .
     volumes:
       - ./docs:/usr/src/app/docs
+      - ./examples:/usr/src/app/examples
       - ./transactions:/usr/src/app/transactions
       - ./tests:/usr/src/app/tests
       - ./pytest.ini:/usr/src/app/pytest.ini

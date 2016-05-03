@@ -25,3 +25,13 @@ def test_transaction_creation_via_simple_transaction():
     assert trxs.testnet is True
     simple_transaction = trxs.simple_transaction(alice, (bob, 6))
     assert simple_transaction
+
+
+@pytest.mark.skipif(os.environ.get('TRAVIS') == 'true',
+                    reason='sslv3 alert handshake failure')
+def test_transaction_creation_via_create():
+    from transactions import Transactions
+    trxs = Transactions(testnet=True)
+    assert trxs.testnet is True
+    simple_transaction = trxs.create(alice, (bob, 6))
+    assert simple_transaction
