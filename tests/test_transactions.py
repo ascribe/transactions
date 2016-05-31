@@ -1,4 +1,5 @@
 import os
+from importlib import import_module
 
 import pytest
 
@@ -7,12 +8,19 @@ alice = 'n12nZmfTbDGCT3VJF5QhPhyVGXvXPzQkFW'
 bob = 'mgaUVCq15uywYsqv7dVM4vxVAkq37c44aW'
 
 
-def test_init_transactions_class_with_defaults():
+@pytest.mark.parametrize('srv,srv_mod_name,srv_cls_name,is_testnet', [
+    ('blockr', 'blockrservice', 'BitcoinBlockrService', False),
+    ('daemon', 'daemonservice', 'BitcoinDaemonService', False),
+    ('regtest', 'daemonservice', 'RegtestDaemonService', True),
+])
+def test_init_transactions_class(srv, srv_mod_name, srv_cls_name, is_testnet):
     from transactions import Transactions
-    from transactions.services.blockrservice import BitcoinBlockrService
-    trxs = Transactions()
-    assert trxs.testnet is False
-    assert isinstance(trxs._service, BitcoinBlockrService)
+    service_module = import_module(
+        '.{}'.format(srv_mod_name), package='transactions.services')
+    service_class = getattr(service_module, srv_cls_name)
+    trxs = Transactions(service=srv)
+    assert trxs.testnet is is_testnet
+    assert isinstance(trxs._service, service_class)
     assert trxs._min_tx_fee == trxs._service._min_transaction_fee
     assert trxs._dust == trxs._service._min_dust
 
