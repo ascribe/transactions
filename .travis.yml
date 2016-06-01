@@ -1,22 +1,15 @@
-sudo: required
+language: python
+python: 2.7
 
-services:
-  - docker
-
-env:
-  DOCKER_COMPOSE_VERSION: 1.7.0
+install: pip install -e .[test]
 
 before_install:
-  - sudo apt-get update
-  - sudo apt-get install -o Dpkg::Options::="--force-confold" --force-yes -y docker-engine
-  - sudo rm /usr/local/bin/docker-compose
-  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-  - chmod +x docker-compose
-  - sudo mv docker-compose /usr/local/bin
+  - pip install codecov
+  - sudo apt-add-repository -y ppa:bitcoin/bitcoin
+  - sudo apt-get -q update
+  - sudo apt-get install -y bitcoind
+  - bitcoind -daemon -regtest -rpcuser=a -rpcpassword=b
 
-script:
-  - docker-compose build
-  - docker-compose up -d bitcoin
-  - docker-compose run --rm tx py.test -v --cov
+script: py.test -v --cov
 
 after_success: codecov

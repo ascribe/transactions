@@ -1,3 +1,6 @@
+import os
+
+
 def test_bitcoin_service_attributes():
     from transactions.services.service import BitcoinService
     assert BitcoinService._min_dust == 3000
@@ -21,7 +24,8 @@ def test_bitcoin_service_init_testnet():
 
 def test_make_request():
     from transactions.services.daemonservice import BitcoinDaemonService
-    s = BitcoinDaemonService('a', 'b', 'bitcoin', 18332)
+    s = BitcoinDaemonService(
+        'a', 'b', os.environ.get('BITCOIN_HOST', 'localhost'), 18332)
     response = s.make_request('getinfo')
     assert 'id' in response
     assert 'error' in response

@@ -4,13 +4,9 @@ services:
   tx:
     build: .
     volumes:
-      - ./docs:/usr/src/app/docs
-      - ./examples:/usr/src/app/examples
-      - ./transactions:/usr/src/app/transactions
-      - ./tests:/usr/src/app/tests
-      - ./pytest.ini:/usr/src/app/pytest.ini
-      - ./setup.cfg:/usr/src/app/setup.cfg
-      - ./setup.py:/usr/src/app/setup.py
+      - .:/usr/src/app
+    environment:
+      BITCOIN_HOST: bitcoin
     command: py.test -v
   bitcoin:
     image: ascribe/bitcoin
