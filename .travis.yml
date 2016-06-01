@@ -1,6 +1,12 @@
 language: python
 python: 2.7
 
+env:
+  global:
+    - BITCOIN_HOST=localhost
+    - BITCOIN_RPCUSER=btcmonkey
+    - BITCOIN_RPCPASSWORD=bananas
+
 install: pip install -e .[test]
 
 before_install:
@@ -8,7 +14,7 @@ before_install:
   - sudo apt-add-repository -y ppa:bitcoin/bitcoin
   - sudo apt-get -q update
   - sudo apt-get install -y bitcoind
-  - bitcoind -daemon -regtest -rpcuser=a -rpcpassword=b
+  - bitcoind -daemon -regtest -rpcuser=btcmonkey -rpcpassword=bananas
 
 script: py.test -v --cov
 
