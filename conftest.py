@@ -65,3 +65,15 @@ def init_blockchain(rpcurl):
         balance = conn.getbalance()
         if balance < 50:
             conn.generate(1)
+
+
+@pytest.fixture
+def transaction(rpcuser, rpcpassword, host, port, rpcurl):
+    from transactions import Transactions
+    return Transactions(
+        service='daemon',
+        username=rpcuser,
+        password=rpcpassword,
+        host=host,
+        port=port,
+    )

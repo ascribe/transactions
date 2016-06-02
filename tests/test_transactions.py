@@ -27,6 +27,40 @@ def test_init_transactions_class(srv, srv_mod_name, srv_cls_name, is_testnet):
     assert trxs._dust == trxs._service._min_dust
 
 
+def test_init_transaction_class_with_non_suported_service():
+    from transactions import Transactions
+    with pytest.raises(Exception):
+        Transactions(service='dummy')
+
+
+@pytest.mark.usefixtures('init_blockchain')
+def test_get_raw_transaction_of_len_64(transaction, rpcurl):
+    conn = AuthServiceProxy(rpcurl)
+    alice = conn.getnewaddress()
+    btc_amount = 1
+    tx_hash = conn.sendtoaddress(alice, btc_amount)
+    conn.generate(1)
+    tx = transaction.get(tx_hash, raw=True)
+    assert isinstance(tx, dict)
+    assert 'blockhash' in tx
+    assert 'vout' in tx
+    assert 'hex' in tx
+    assert 'vin' in tx
+    assert 'txid' in tx
+    assert 'blocktime' in tx
+    assert 'version' in tx
+    assert 'confirmations' in tx
+    assert 'time' in tx
+    assert 'locktime' in tx
+    assert 'size' in tx
+    for vout in tx['vout']:
+        if vout['scriptPubKey']['addresses'][0] == alice:
+            break
+    else:
+        assert False, 'alice address was not found'
+    assert vout['value'] == btc_amount
+
+
 @pytest.mark.usefixtures('init_blockchain')
 def test_transaction_creation_via_simple_transactian(rpcuser,
                                                      rpcpassword,
