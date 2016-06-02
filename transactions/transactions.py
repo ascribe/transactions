@@ -1,4 +1,4 @@
-import pybitcointools
+import bitcoin
 
 from pycoin.key.BIP32Node import BIP32Node
 from pycoin.encoding import EncodingError
@@ -57,7 +57,7 @@ class Transactions(object):
 
         """
         self._service.push_tx(tx)
-        return pybitcointools.txhash(tx)
+        return bitcoin.txhash(tx)
 
     def get(self, hash, account="*", max_transactions=100, min_confirmations=6, raw=False):
         """
@@ -117,7 +117,7 @@ class Transactions(object):
 
     def build_transaction(self, inputs, outputs):
         """
-        Thin wrapper around ``pybitcointools.mktx(inputs, outputs)``
+        Thin wrapper around ``bitcoin.mktx(inputs, outputs)``
 
         Args:
             inputs (dict): inputs in the form of
@@ -127,10 +127,10 @@ class Transactions(object):
         Returns:
             transaction
         """
-        # prepare inputs and outputs for pybitcointools
+        # prepare inputs and outputs for bitcoin
         inputs = [{'output': '{}:{}'.format(input['txid'], input['vout']),
                    'value': input['amount']} for input in inputs]
-        tx = pybitcointools.mktx(inputs, outputs)
+        tx = bitcoin.mktx(inputs, outputs)
         return tx
 
     def sign_transaction(self, tx, master_password, path=''):
@@ -154,10 +154,10 @@ class Transactions(object):
         # check if its a wif
         try:
             BIP32Node.from_text(master_password)
-            return pybitcointools.signall(tx, master_password)
+            return bitcoin.signall(tx, master_password)
         except EncodingError:
             # if its not get the wif from the master secret
-            return pybitcointools.signall(tx, BIP32Node.from_master_secret(master_password, netcode=netcode).subkey_for_path(path).wif())
+            return bitcoin.signall(tx, BIP32Node.from_master_secret(master_password, netcode=netcode).subkey_for_path(path).wif())
 
     def _select_inputs(self, address, amount, n_outputs=2, min_confirmations=6):
         # selects the inputs to fulfill the amount

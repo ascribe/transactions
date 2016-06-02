@@ -32,7 +32,7 @@ def find_version(*file_paths):
 
 
 install_requires = [
-    'pybitcointools==1.1.15',
+    'bitcoin>=1.1.42',
     'pycoin==0.52',
     'requests==2.7.0',
 ]
