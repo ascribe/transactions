@@ -1,11 +1,13 @@
+# -*- coding: utf-8 -*-
+
+from __future__ import unicode_literals
+
 import os
 from importlib import import_module
 
 import pytest
-
-
-alice = 'n12nZmfTbDGCT3VJF5QhPhyVGXvXPzQkFW'
-bob = 'mgaUVCq15uywYsqv7dVM4vxVAkq37c44aW'
+from bitcoinrpc.authproxy import AuthServiceProxy
+from pycoin.key.BIP32Node import BIP32Node
 
 
 @pytest.mark.parametrize('srv,srv_mod_name,srv_cls_name,is_testnet', [
@@ -25,9 +27,81 @@ def test_init_transactions_class(srv, srv_mod_name, srv_cls_name, is_testnet):
     assert trxs._dust == trxs._service._min_dust
 
 
+@pytest.mark.usefixtures('init_blockchain')
+def test_transaction_creation_via_simple_transactian(rpcuser,
+                                                     rpcpassword,
+                                                     host,
+                                                     port,
+                                                     rpcurl):
+    from transactions import Transactions
+
+    # create two users: alice & bob
+    conn = AuthServiceProxy(rpcurl)
+    alice = conn.getnewaddress()
+    bob = conn.getnewaddress()
+
+    # Give alice 3 bitcoins
+    conn.sendtoaddress(alice, 3)
+    conn.generate(1)
+
+    trxs = Transactions(
+        service='daemon',
+        username=rpcuser,
+        password=rpcpassword,
+        host=host,
+        port=port,
+    )
+    simple_transaction = trxs.simple_transaction(
+        alice, (bob, 200000000), min_confirmations=1)
+    assert simple_transaction
+
+
+@pytest.mark.usefixtures('init_blockchain')
+def test_create_sign_push_transaction(rpcuser,
+                                      rpcpassword,
+                                      host,
+                                      port,
+                                      rpcurl):
+    from transactions import Transactions
+
+    # create two users: alice & bob
+    alice = BIP32Node.from_master_secret('alice-secret',
+                                         netcode='XTN').bitcoin_address()
+    bob = BIP32Node.from_master_secret('bob-secret',
+                                       netcode='XTN').bitcoin_address()
+
+    conn = AuthServiceProxy(rpcurl)
+    conn.importaddress(alice)
+    conn.importaddress(bob)
+
+    # Give alice 3 bitcoins
+    conn.sendtoaddress(alice, 3)
+    conn.generate(1)
+
+    trxs = Transactions(
+        service='daemon',
+        username=rpcuser,
+        password=rpcpassword,
+        host=host,
+        port=port,
+        testnet=True,
+    )
+    raw_tx = trxs.create(alice, (bob, 200000000), min_confirmations=1)
+    assert raw_tx
+    signed_tx = trxs.sign(raw_tx, 'alice-secret')
+    assert signed_tx
+
+    # get bob's balance before tx
+    bob_before = conn.getreceivedbyaddress(bob)
+    pushed_tx = trxs.push(signed_tx)
+    assert pushed_tx
+    conn.generate(1)    # pack the transaction into a block
+    assert conn.getreceivedbyaddress(bob) - bob_before == 2
+
+
 @pytest.mark.skipif(os.environ.get('TRAVIS') == 'true',
                     reason='sslv3 alert handshake failure')
-def test_transaction_creation_via_simple_transaction():
+def test_transaction_creation_via_simple_transaction_with_blockr(alice, bob):
     from transactions import Transactions
     trxs = Transactions(testnet=True)
     assert trxs.testnet is True
@@ -37,7 +111,7 @@ def test_transaction_creation_via_simple_transaction():
 
 @pytest.mark.skipif(os.environ.get('TRAVIS') == 'true',
                     reason='sslv3 alert handshake failure')
-def test_transaction_creation_via_create():
+def test_transaction_creation_via_create_with_blockr(alice, bob):
     from transactions import Transactions
     trxs = Transactions(testnet=True)
     assert trxs.testnet is True

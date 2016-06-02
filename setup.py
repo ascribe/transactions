@@ -45,12 +45,13 @@ tests_require = [
     'pylint',
     'pytest',
     'pytest-cov',
+    'python-bitcoinrpc>=0.3.1',
 ]
 
 dev_require = [
     'ipdb',
     'ipython',
-    'python-bitcoinrpc',
+    'python-bitcoinrpc>=0.3.1',
 ]
 
 docs_require = [
@@ -88,4 +89,7 @@ setup(
         'dev':  dev_require + tests_require + docs_require,
         'docs':  docs_require,
     },
+    dependency_links=[
+        'git+https://github.com/sbellem/python-bitcoinrpc.git@setup#egg=python_bitcoinrpc-0.3.1',
+    ],
 )

@@ -7,7 +7,7 @@ env:
     - BITCOIN_RPCUSER=btcmonkey
     - BITCOIN_RPCPASSWORD=bananas
 
-install: pip install -e .[test]
+install: pip install --process-dependency-links -e .[test]
 
 before_install:
   - pip install codecov
