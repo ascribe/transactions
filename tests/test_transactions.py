@@ -71,6 +71,21 @@ def test_transaction_creation_via_simple_transactian(transactions, rpcconn):
 
 
 @pytest.mark.usefixtures('init_blockchain')
+def test_transaction_creation_with_op_return(transactions, rpcconn):
+    alice = rpcconn.getnewaddress()
+    bob = rpcconn.getnewaddress()
+    rpcconn.sendtoaddress(alice, 3)
+    rpcconn.generate(1)
+    transaction = transactions.create(
+        alice,
+        (bob, 200000000),
+        min_confirmations=1,
+        op_return='micro-combustion',
+    )
+    assert transaction
+
+
+@pytest.mark.usefixtures('init_blockchain')
 def test_create_sign_push_transaction(transactions, rpcconn):
     alice = BIP32Node.from_master_secret('alice-secret',
                                          netcode='XTN').bitcoin_address()
