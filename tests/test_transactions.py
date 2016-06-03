@@ -103,6 +103,32 @@ def test_sign_transaction_with_wif(transactions, rpcconn,
 
 
 @pytest.mark.usefixtures('init_blockchain')
+def test_select_inputs(transactions, rpcconn):
+    alice = rpcconn.getnewaddress()
+    rpcconn.sendtoaddress(alice, 1)
+    rpcconn.generate(1)
+    satoshis = 100000000 - transactions._min_tx_fee
+    transactions._select_inputs(alice, satoshis, min_confirmations=1)
+
+
+def test_select_inputs_with_no_funds(transactions, rpcconn):
+    alice = rpcconn.getnewaddress()
+    with pytest.raises(Exception) as exc:
+        transactions._select_inputs(alice, 1)
+    assert exc.value.message == 'No spendable outputs found'
+
+
+@pytest.mark.usefixtures('init_blockchain')
+def test_select_inputs_with_insufficient_funds(transactions, rpcconn):
+    alice = rpcconn.getnewaddress()
+    rpcconn.sendtoaddress(alice, 1)
+    rpcconn.generate(1)
+    with pytest.raises(Exception) as exc:
+        transactions._select_inputs(alice, 100000000, min_confirmations=1)
+    assert exc.value.message == 'Not enough balance in the wallet'
+
+
+@pytest.mark.usefixtures('init_blockchain')
 def test_create_sign_push_transaction(transactions, rpcconn):
     alice = BIP32Node.from_master_secret('alice-secret',
                                          netcode='XTN').bitcoin_address()
