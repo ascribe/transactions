@@ -6,7 +6,6 @@ import os
 from importlib import import_module
 
 import pytest
-from bitcoinrpc.authproxy import AuthServiceProxy
 from pycoin.key.BIP32Node import BIP32Node
 
 
@@ -34,13 +33,12 @@ def test_init_transaction_class_with_non_suported_service():
 
 
 @pytest.mark.usefixtures('init_blockchain')
-def test_get_raw_transaction_of_len_64(transaction, rpcurl):
-    conn = AuthServiceProxy(rpcurl)
-    alice = conn.getnewaddress()
+def test_get_raw_transaction_of_len_64(transactions, rpcconn):
+    alice = rpcconn.getnewaddress()
     btc_amount = 1
-    tx_hash = conn.sendtoaddress(alice, btc_amount)
-    conn.generate(1)
-    tx = transaction.get(tx_hash, raw=True)
+    tx_hash = rpcconn.sendtoaddress(alice, btc_amount)
+    rpcconn.generate(1)
+    tx = transactions.get(tx_hash, raw=True)
     assert isinstance(tx, dict)
     assert 'blockhash' in tx
     assert 'vout' in tx
@@ -62,75 +60,41 @@ def test_get_raw_transaction_of_len_64(transaction, rpcurl):
 
 
 @pytest.mark.usefixtures('init_blockchain')
-def test_transaction_creation_via_simple_transactian(rpcuser,
-                                                     rpcpassword,
-                                                     host,
-                                                     port,
-                                                     rpcurl):
-    from transactions import Transactions
-
-    # create two users: alice & bob
-    conn = AuthServiceProxy(rpcurl)
-    alice = conn.getnewaddress()
-    bob = conn.getnewaddress()
-
-    # Give alice 3 bitcoins
-    conn.sendtoaddress(alice, 3)
-    conn.generate(1)
-
-    trxs = Transactions(
-        service='daemon',
-        username=rpcuser,
-        password=rpcpassword,
-        host=host,
-        port=port,
-    )
-    simple_transaction = trxs.simple_transaction(
+def test_transaction_creation_via_simple_transactian(transactions, rpcconn):
+    alice = rpcconn.getnewaddress()
+    bob = rpcconn.getnewaddress()
+    rpcconn.sendtoaddress(alice, 3)
+    rpcconn.generate(1)
+    simple_transaction = transactions.simple_transaction(
         alice, (bob, 200000000), min_confirmations=1)
     assert simple_transaction
 
 
 @pytest.mark.usefixtures('init_blockchain')
-def test_create_sign_push_transaction(rpcuser,
-                                      rpcpassword,
-                                      host,
-                                      port,
-                                      rpcurl):
-    from transactions import Transactions
-
-    # create two users: alice & bob
+def test_create_sign_push_transaction(transactions, rpcconn):
     alice = BIP32Node.from_master_secret('alice-secret',
                                          netcode='XTN').bitcoin_address()
     bob = BIP32Node.from_master_secret('bob-secret',
                                        netcode='XTN').bitcoin_address()
-
-    conn = AuthServiceProxy(rpcurl)
-    conn.importaddress(alice)
-    conn.importaddress(bob)
-
-    # Give alice 3 bitcoins
-    conn.sendtoaddress(alice, 3)
-    conn.generate(1)
-
-    trxs = Transactions(
-        service='daemon',
-        username=rpcuser,
-        password=rpcpassword,
-        host=host,
-        port=port,
-        testnet=True,
-    )
-    raw_tx = trxs.create(alice, (bob, 200000000), min_confirmations=1)
+    rpcconn.importaddress(alice)
+    rpcconn.importaddress(bob)
+    rpcconn.sendtoaddress(alice, 3)
+    rpcconn.generate(1)
+    raw_tx = transactions.create(alice, (bob, 200000000), min_confirmations=1)
     assert raw_tx
-    signed_tx = trxs.sign(raw_tx, 'alice-secret')
+    signed_tx = transactions.sign(raw_tx, 'alice-secret')
     assert signed_tx
-
-    # get bob's balance before tx
-    bob_before = conn.getreceivedbyaddress(bob)
-    pushed_tx = trxs.push(signed_tx)
+    bob_before = rpcconn.getreceivedbyaddress(bob)
+    pushed_tx = transactions.push(signed_tx)
     assert pushed_tx
-    conn.generate(1)    # pack the transaction into a block
-    assert conn.getreceivedbyaddress(bob) - bob_before == 2
+    rpcconn.generate(1)    # pack the transaction into a block
+    assert rpcconn.getreceivedbyaddress(bob) - bob_before == 2
+
+
+def test_import_address(rpcconn, random_bip32_address, transactions):
+    assert not rpcconn.validateaddress(random_bip32_address)['iswatchonly']
+    transactions.import_address(random_bip32_address)
+    assert rpcconn.validateaddress(random_bip32_address)['iswatchonly']
 
 
 @pytest.mark.skipif(os.environ.get('TRAVIS') == 'true',

@@ -3,10 +3,12 @@
 from __future__ import unicode_literals
 
 import os
+from uuid import uuid1
 
 import pytest
 
 from bitcoinrpc.authproxy import AuthServiceProxy
+from pycoin.key.BIP32Node import BIP32Node
 
 
 @pytest.fixture
@@ -22,6 +24,16 @@ def bob():
 @pytest.fixture
 def carol():
     return 'mtWg6ccLiZWw2Et7E5UqmHsYgrAi5wqiov'
+
+
+@pytest.fixture
+def random_bip32_wallet():
+    return BIP32Node.from_master_secret(uuid1().get_hex(), netcode='XTN')
+
+
+@pytest.fixture
+def random_bip32_address(random_bip32_wallet):
+    return random_bip32_wallet.bitcoin_address()
 
 
 @pytest.fixture
@@ -50,25 +62,29 @@ def rpcurl(rpcuser, rpcpassword, host, port):
 
 
 @pytest.fixture
-def init_blockchain(rpcurl):
+def rpcconn(rpcurl):
+    return AuthServiceProxy(rpcurl)
+
+
+@pytest.fixture
+def init_blockchain(rpcconn):
     """
     Initialize the blockchain if needed, making sure that the balance is at
     least 50 bitcoins. The block reward only happens after 100 blocks, and for
     this reason at least 101 blocks are needed.
 
     """
-    conn = AuthServiceProxy(rpcurl)
-    block_count = conn.getblockcount()
+    block_count = rpcconn.getblockcount()
     if block_count < 101:
-        conn.generate(101 - block_count)
+        rpcconn.generate(101 - block_count)
     else:
-        balance = conn.getbalance()
+        balance = rpcconn.getbalance()
         if balance < 50:
-            conn.generate(1)
+            rpcconn.generate(1)
 
 
 @pytest.fixture
-def transaction(rpcuser, rpcpassword, host, port, rpcurl):
+def transactions(rpcuser, rpcpassword, host, port, rpcurl):
     from transactions import Transactions
     return Transactions(
         service='daemon',
@@ -76,4 +92,5 @@ def transaction(rpcuser, rpcpassword, host, port, rpcurl):
         password=rpcpassword,
         host=host,
         port=port,
+        testnet=True,
     )
