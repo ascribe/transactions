@@ -86,6 +86,23 @@ def test_transaction_creation_with_op_return(transactions, rpcconn):
 
 
 @pytest.mark.usefixtures('init_blockchain')
+def test_sign_transaction_with_wif(transactions, rpcconn,
+                                   alice_hd_wallet, bob_hd_address):
+    alice_hd_address = alice_hd_wallet.bitcoin_address()
+    rpcconn.importaddress(alice_hd_address)
+    rpcconn.importaddress(bob_hd_address)
+    rpcconn.sendtoaddress(alice_hd_address, 3)
+    rpcconn.generate(1)
+    raw_tx = transactions.create(
+        alice_hd_address,
+        (bob_hd_address, 200000000),
+        min_confirmations=1,
+    )
+    signed_tx = transactions.sign(raw_tx, alice_hd_wallet.wif())
+    assert signed_tx
+
+
+@pytest.mark.usefixtures('init_blockchain')
 def test_create_sign_push_transaction(transactions, rpcconn):
     alice = BIP32Node.from_master_secret('alice-secret',
                                          netcode='XTN').bitcoin_address()
