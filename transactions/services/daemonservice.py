@@ -36,6 +36,12 @@ class BitcoinDaemonService(BitcoinService):
             print "Bitcoin service can not be accessed. Check username, password or host"
             raise
 
+    def get_block_raw(self, block_hash):
+        return self.make_request('getblock', (block_hash,))
+
+    def get_block_info(self, block_hash):
+        return self.make_request('getblockheader', (block_hash,))
+
     def get_help(self):
         return self.make_request('help')
 

@@ -168,6 +168,32 @@ def test_decode_transaction_with_jsonrpc(transactions):
     assert exc.value.message == 'Currently only supported for "blockr.io"'
 
 
+def test_get_block_raw(rpcconn, transactions):
+    block_hash = rpcconn.generate(1)[0]
+    block_data = transactions.get_block_raw(block_hash)
+    assert block_data
+
+
+def test_get_block_info(rpcconn, transactions):
+    block_hash = rpcconn.generate(1)[0]
+    block_data = transactions.get_block_info(block_hash)
+    assert block_data
+
+
+def test_get_block_raw_with_blockr(block_hash):
+    from transactions import Transactions
+    transactions = Transactions(testnet=True)
+    block_data = transactions.get_block_info(block_hash)
+    assert block_data
+
+
+def test_get_block_info_with_blockr(block_hash):
+    from transactions import Transactions
+    transactions = Transactions(testnet=True)
+    block_data = transactions.get_block_info(block_hash)
+    assert block_data
+
+
 @pytest.mark.skipif(os.environ.get('TRAVIS') == 'true',
                     reason='sslv3 alert handshake failure')
 def test_transaction_creation_via_simple_transaction_with_blockr(alice, bob):

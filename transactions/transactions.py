@@ -213,10 +213,12 @@ class Transactions(object):
     def get_block_raw(self, block):
         """
         Args:
-            block: block number (eg: 223212)
-                block hash (eg: 0000000000000000210b10d620600dc1cc2380bb58eb2408f9767eb792ed31fa)
-                word "last" - this will always return the latest block
-                word "first" - this will always return the first block
+            block: block hash (eg: 0000000000000000210b10d620600dc1cc2380bb58eb2408f9767eb792ed31fa)
+                block number (eg: 223212) - only for blockr
+                word "last" - this will always return the latest block - only
+                    for blockr
+                word "first" - this will always return the first block - only
+                    for blockr
         Returns:
             raw block data
 
@@ -226,10 +228,12 @@ class Transactions(object):
     def get_block_info(self, block):
         """
         Args:
-            block: block number (eg: 223212)
-                block hash (eg: 0000000000000000210b10d620600dc1cc2380bb58eb2408f9767eb792ed31fa)
-                word "last" - this will always return the latest block
-                word "first" - this will always return the first block
+            block: block hash (eg: 0000000000000000210b10d620600dc1cc2380bb58eb2408f9767eb792ed31fa)
+                block number (eg: 223212) - only for blockr
+                word "last" - this will always return the latest block - only
+                    for blockr
+                word "first" - this will always return the first block - only
+                    for blockr
         Returns:
             basic block data
 

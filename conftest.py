@@ -127,3 +127,14 @@ def signed_tx_hex():
         '8ccbafd72fdaed88b34d62337f588ac00e5b901000000001976a9145d5988080ddb72'
         'dcb365755fbc1ea46bbee7628788ac00000000'
     )
+
+
+@pytest.fixture
+def block_hash():
+    """
+    Hash of a block on testnet.
+
+    See https://www.blocktrail.com/tBTC/block/787057 for example.
+
+    """
+    return '00000000000003970a9fdd3f774995320c6eb729b01065fd86e210336b4022f3'
