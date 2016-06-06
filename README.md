@@ -2,6 +2,7 @@
 
 [![PyPI](https://img.shields.io/pypi/v/transactions.svg)](https://pypi.python.org/pypi/transactions)
 [![Travis](https://img.shields.io/travis/ascribe/transactions.svg)](https://travis-ci.org/ascribe/transactions)
+[![Codecov branch](https://img.shields.io/codecov/c/github/ascribe/transactions/master.svg)](https://codecov.io/github/ascribe/transactions?branch=master)
 [![Documentation Status](https://readthedocs.org/projects/transactions/badge/?version=latest)](http://transactions.readthedocs.org/en/latest/?badge=latest)
 
 transactions is a small python library to easily create and push transactions to the bitcoin network.
