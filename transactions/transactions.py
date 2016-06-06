@@ -206,7 +206,7 @@ class Transactions(object):
         .. note:: Only supported for blockr.io at the moment.
 
         """
-        if self._service != 'blockr':
+        if not isinstance(self._service, BitcoinBlockrService):
             raise NotImplementedError('Currently only supported for "blockr.io"')
         return self._service.decode(tx)
 
