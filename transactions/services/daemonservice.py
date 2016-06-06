@@ -42,9 +42,6 @@ class BitcoinDaemonService(BitcoinService):
     def get_block_info(self, block_hash):
         return self.make_request('getblockheader', (block_hash,))
 
-    def get_help(self):
-        return self.make_request('help')
-
     def getinfo(self):
         return self.make_request('getinfo')
 

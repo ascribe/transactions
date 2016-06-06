@@ -117,6 +117,12 @@ def transactions(rpcuser, rpcpassword, host, port, rpcurl):
 
 
 @pytest.fixture
+def bitcoin_daemon_service(rpcuser, rpcpassword, host, port, rpcurl):
+    from transactions.services.daemonservice import BitcoinDaemonService
+    return BitcoinDaemonService(rpcuser, rpcpassword, host, port)
+
+
+@pytest.fixture
 def signed_tx_hex():
     return (
         '01000000014f2d34b5c41cfc34ffba6811280297cd3a45fdc4a982bd137219170e34d'
