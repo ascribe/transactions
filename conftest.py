@@ -114,3 +114,16 @@ def transactions(rpcuser, rpcpassword, host, port, rpcurl):
         port=port,
         testnet=True,
     )
+
+
+@pytest.fixture
+def signed_tx_hex():
+    return (
+        '01000000014f2d34b5c41cfc34ffba6811280297cd3a45fdc4a982bd137219170e34d'
+        '8a995010000006b483045022100f52d33589ac95fda263d35a694dffcc9626d4c371a'
+        '3140c020cf22956adc9e14022073c833d254a13620ff0b4d9e0f8c52643962f1cdc7d'
+        '684cbacf1a82692cee1ed01210256e335d68d2f4f9561985fb061a5c36ff9510b7300'
+        '5cf81e2f7a26e7bce0d8ceffffffff0210270000000000001976a914ff141b97e1bd3'
+        '8ccbafd72fdaed88b34d62337f588ac00e5b901000000001976a9145d5988080ddb72'
+        'dcb365755fbc1ea46bbee7628788ac00000000'
+    )
