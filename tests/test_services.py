@@ -129,3 +129,29 @@ def test_get_transaction(bitcoin_daemon_service, rpcconn):
     assert tx['time']
     assert any(vout['address'] == addr and vout['value'] == 100000000
                for vout in tx['vouts'])
+
+
+def test_get_address_for_vout_for_invalid_tx(bitcoin_daemon_service):
+    with pytest.raises(Exception) as exc:
+        bitcoin_daemon_service._get_address_for_vout('a', 0)
+    err = exc.value.message
+    assert err['message'] == "parameter 1 must be hexadecimal string (not 'a')"
+    assert err['code'] == -8
+
+
+def test_get_address_for_vout_for_unknown_tx(bitcoin_daemon_service, rpcconn):
+    txid = '0123456789abcdefABCDEF0123456789abcdefABCDEF0123456789abcdefABCD'
+    assert bitcoin_daemon_service._get_address_for_vout(txid, 0) == ''
+
+
+def test_get_value_from_vout_for_invalid_tx(bitcoin_daemon_service):
+    with pytest.raises(Exception) as exc:
+        bitcoin_daemon_service._get_value_from_vout('a', 0)
+    err = exc.value.message
+    assert err['message'] == "parameter 1 must be hexadecimal string (not 'a')"
+    assert err['code'] == -8
+
+
+def test_get_value_from_vout_for_unknown_tx(bitcoin_daemon_service, rpcconn):
+    txid = '0123456789abcdefABCDEF0123456789abcdefABCDEF0123456789abcdefABCD'
+    assert bitcoin_daemon_service._get_value_from_vout(txid, 0) == 0
