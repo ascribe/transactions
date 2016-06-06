@@ -2,7 +2,6 @@
 
 from __future__ import unicode_literals
 
-import os
 from importlib import import_module
 
 import pytest
@@ -194,8 +193,6 @@ def test_get_block_info_with_blockr(block_hash):
     assert block_data
 
 
-@pytest.mark.skipif(os.environ.get('TRAVIS') == 'true',
-                    reason='sslv3 alert handshake failure')
 def test_transaction_creation_via_simple_transaction_with_blockr(alice, bob):
     from transactions import Transactions
     trxs = Transactions(testnet=True)
@@ -204,8 +201,6 @@ def test_transaction_creation_via_simple_transaction_with_blockr(alice, bob):
     assert simple_transaction
 
 
-@pytest.mark.skipif(os.environ.get('TRAVIS') == 'true',
-                    reason='sslv3 alert handshake failure')
 def test_transaction_creation_via_create_with_blockr(alice, bob):
     from transactions import Transactions
     trxs = Transactions(testnet=True)
