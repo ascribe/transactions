@@ -33,6 +33,34 @@ def test_make_request(bitcoin_daemon_service):
     assert 'result' in response
 
 
+def test_regtest_make_request(regtest_daemon_service):
+    response = regtest_daemon_service.make_request('getinfo')
+    assert 'id' in response
+    assert 'error' in response
+    assert 'result' in response
+
+
+@pytest.mark.usefixtures('init_blockchain')
+def test_regtest_make_request_with_sendrawtransaction(rpcconn,
+                                                      regtest_daemon_service):
+    addr = rpcconn.getnewaddress()
+    for unspent in rpcconn.listunspent():
+        if unspent['spendable']:
+            break
+    raw_tx = rpcconn.createrawtransaction(
+        ({'txid': unspent['txid'], 'vout': unspent['vout']},),
+        {addr: unspent['amount']},
+    )
+    signed_tx = rpcconn.signrawtransaction(raw_tx)['hex']
+    block_count = rpcconn.getblockcount()
+    response = regtest_daemon_service.make_request('sendrawtransaction',
+                                                   params=(signed_tx,))
+    assert rpcconn.getblockcount() - block_count == 1
+    tx = rpcconn.gettransaction(response['result'])
+    assert any(d['address'] == addr and d['category'] == 'receive'
+               for d in tx['details'])
+
+
 def test_getinfo(bitcoin_daemon_service):
     response = bitcoin_daemon_service.getinfo()
     assert 'id' in response
