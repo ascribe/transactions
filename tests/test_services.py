@@ -159,6 +159,17 @@ def test_get_transaction(bitcoin_daemon_service, rpcconn):
                for vout in tx['vouts'])
 
 
+@pytest.mark.usefixtures('init_blockchain')
+def test_get_address_for_vout(bitcoin_daemon_service, rpcconn):
+    addr = rpcconn.getnewaddress()
+    txid = rpcconn.sendtoaddress(addr, 1)
+    unspent_tx = rpcconn.listunspent(0, 0, (addr,))[0]
+    assert unspent_tx['txid'] == txid
+    vout = unspent_tx['vout']
+    result = bitcoin_daemon_service._get_address_for_vout(txid, vout)
+    assert result == addr
+
+
 def test_get_address_for_vout_for_invalid_tx(bitcoin_daemon_service):
     with pytest.raises(Exception) as exc:
         bitcoin_daemon_service._get_address_for_vout('a', 0)
@@ -170,6 +181,17 @@ def test_get_address_for_vout_for_invalid_tx(bitcoin_daemon_service):
 def test_get_address_for_vout_for_unknown_tx(bitcoin_daemon_service, rpcconn):
     txid = '0123456789abcdefABCDEF0123456789abcdefABCDEF0123456789abcdefABCD'
     assert bitcoin_daemon_service._get_address_for_vout(txid, 0) == ''
+
+
+@pytest.mark.usefixtures('init_blockchain')
+def test_get_value_from_vout(bitcoin_daemon_service, rpcconn):
+    addr = rpcconn.getnewaddress()
+    txid = rpcconn.sendtoaddress(addr, 1)
+    unspent_tx = rpcconn.listunspent(0, 0, (addr,))[0]
+    assert unspent_tx['txid'] == txid
+    vout = unspent_tx['vout']
+    result = bitcoin_daemon_service._get_value_from_vout(txid, vout)
+    assert result == 1
 
 
 def test_get_value_from_vout_for_invalid_tx(bitcoin_daemon_service):
