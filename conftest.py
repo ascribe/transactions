@@ -13,17 +13,22 @@ from pycoin.key.BIP32Node import BIP32Node
 
 @pytest.fixture
 def alice():
-    return 'n12nZmfTbDGCT3VJF5QhPhyVGXvXPzQkFW'
+    return 'mp2YPeFdPufm515qWbmPXzSACxnMVdphnF'
 
 
 @pytest.fixture
 def bob():
-    return 'mgaUVCq15uywYsqv7dVM4vxVAkq37c44aW'
+    return 'n4mgh5qiBXj7Y3tLu4fqcPf5KubRVmR9Lr'
 
 
 @pytest.fixture
 def carol():
     return 'mtWg6ccLiZWw2Et7E5UqmHsYgrAi5wqiov'
+
+
+@pytest.fixture
+def alice_secret():
+    return 'alice-super-duper-mega-top-secret'
 
 
 @pytest.fixture
@@ -54,6 +59,23 @@ def random_bip32_wallet():
 @pytest.fixture
 def random_bip32_address(random_bip32_wallet):
     return random_bip32_wallet.bitcoin_address()
+
+
+@pytest.fixture
+def alice_to_bob_txid():
+    return '2a77690c8d6d4eb8c49653ce8052fdea903328c095289eb389b6aad760ce6fcd'
+
+
+@pytest.fixture
+def alice_to_bob_signed_tx():
+    return (
+        '01000000014f2d34b5c41cfc34ffba6811280297cd3a45fdc4a982bd137219170e34d8a995010000006b'
+        '483045022100f52d33589ac95fda263d35a694dffcc9626d4c371a3140c020cf22956adc9e14022073c8'
+        '33d254a13620ff0b4d9e0f8c52643962f1cdc7d684cbacf1a82692cee1ed01210256e335d68d2f4f9561'
+        '985fb061a5c36ff9510b73005cf81e2f7a26e7bce0d8ceffffffff0210270000000000001976a914ff14'
+        '1b97e1bd38ccbafd72fdaed88b34d62337f588ac00e5b901000000001976a9145d5988080ddb72dcb365'
+        '755fbc1ea46bbee7628788ac00000000'
+    )
 
 
 @pytest.fixture
@@ -126,6 +148,12 @@ def bitcoin_daemon_service(rpcuser, rpcpassword, host, port, rpcurl):
 def regtest_daemon_service(rpcuser, rpcpassword, host, port, rpcurl):
     from transactions.services.daemonservice import RegtestDaemonService
     return RegtestDaemonService(rpcuser, rpcpassword, host, port)
+
+
+@pytest.fixture
+def blockr():
+    from transactions.services.blockrservice import BitcoinBlockrService
+    return BitcoinBlockrService(testnet=True)
 
 
 @pytest.fixture

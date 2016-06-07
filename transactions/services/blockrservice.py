@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+
+from __future__ import unicode_literals
+
 import json
 import bitcoin
 import requests
@@ -49,7 +53,7 @@ class BitcoinBlockrService(BitcoinService):
                         'time': self._convert_time(tx['time_utc'])})
         return out
 
-    def list_unspents(self, address, min_confirmations):
+    def list_unspents(self, address, min_confirmations, raw=False):
         unconfirmed = True if min_confirmations == 0 else False
         if unconfirmed:
             path = '/address/unspent/{}?unconfirmed=1'.format(address)
@@ -57,6 +61,9 @@ class BitcoinBlockrService(BitcoinService):
             path = '/address/unspent/{}'.format(address)
         url = self._url + path
         results = self.make_request(url)
+
+        if raw:
+            return results
 
         out = []
         for unspent in results['unspent']:
@@ -116,11 +123,11 @@ class BitcoinBlockrService(BitcoinService):
         param address = address to import
         param label= account name to use
         """
-        pass
+        raise NotImplementedError
 
     def get_balance(self, addresses, confirmations=None):
         # TODO review
-        if not isinstance(addresses, str):
+        if not isinstance(addresses, basestring):
             addresses = ','.join(addresses)
         url = '{}/address/balance/{}'.format(self._url, addresses)
         # TODO add support for confirmations
