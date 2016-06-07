@@ -1,6 +1,8 @@
+# -*- coding: utf-8 -*-
 """
 Custom exceptions
 """
+from __future__ import unicode_literals
 
 
 class TransactionNotFound(Exception):
@@ -14,7 +16,7 @@ class TransactionNotFound(Exception):
         self.message = message
 
     def __str__(self):
-        return repr(self.message)
+        return self.message
 
 
 class TransactionError(Exception):
@@ -30,4 +32,4 @@ class TransactionError(Exception):
         self.message = message
 
     def __str__(self):
-        return repr(self.message)
+        return self.message
