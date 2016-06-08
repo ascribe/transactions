@@ -140,7 +140,7 @@ def test_raw_get_transaction(alice, bob, alice_to_bob_txid, blockr):
 def test_push_tx(alice, bob, alice_secret, blockr):
     from transactions import Transactions
     transactions = Transactions(testnet=True)
-    raw_tx = transactions.create(alice, (bob, 1))
+    raw_tx = transactions.create(alice, (bob, 1), min_confirmations=1)
     signed_tx = transactions.sign(raw_tx, alice_secret)
     txid = blockr.push_tx(signed_tx)
     assert txid
@@ -149,7 +149,7 @@ def test_push_tx(alice, bob, alice_secret, blockr):
 def test_raw_push_tx(alice, bob, alice_secret, blockr):
     from transactions import Transactions
     transactions = Transactions(testnet=True)
-    raw_tx = transactions.create(alice, (bob, 1))
+    raw_tx = transactions.create(alice, (bob, 1), min_confirmations=1)
     signed_tx = transactions.sign(raw_tx, alice_secret)
     response = blockr.push_tx(signed_tx, raw=True)
     assert response.status_code == 200

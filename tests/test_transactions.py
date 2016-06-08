@@ -197,7 +197,9 @@ def test_transaction_creation_via_simple_transaction_with_blockr(alice, bob):
     from transactions import Transactions
     trxs = Transactions(testnet=True)
     assert trxs.testnet is True
-    simple_transaction = trxs.simple_transaction(alice, (bob, 6))
+    simple_transaction = trxs.simple_transaction(alice,
+                                                 (bob, 6),
+                                                 min_confirmations=1)
     assert simple_transaction
 
 
@@ -205,5 +207,5 @@ def test_transaction_creation_via_create_with_blockr(alice, bob):
     from transactions import Transactions
     trxs = Transactions(testnet=True)
     assert trxs.testnet is True
-    simple_transaction = trxs.create(alice, (bob, 6))
+    simple_transaction = trxs.create(alice, (bob, 6), min_confirmations=1)
     assert simple_transaction
