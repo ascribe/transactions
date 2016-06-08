@@ -33,8 +33,8 @@ def find_version(*file_paths):
 
 install_requires = [
     'bitcoin>=1.1.42',
-    'pycoin==0.52',
-    'requests==2.7.0',
+    'pycoin>=0.62',
+    'requests>=2.9.1',
 ]
 
 tests_require = [
