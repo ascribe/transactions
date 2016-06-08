@@ -4,6 +4,8 @@ from __future__ import unicode_literals
 
 import pytest
 
+from requests.exceptions import ConnectionError, InvalidURL
+
 
 def test_bitcoin_service_attributes():
     from transactions.services.service import BitcoinService
@@ -31,6 +33,20 @@ def test_make_request(bitcoin_daemon_service):
     assert 'id' in response
     assert 'error' in response
     assert 'result' in response
+
+
+def test_make_request_invalid_url():
+    from transactions.services.daemonservice import BitcoinDaemonService
+    s = BitcoinDaemonService('merlin', 'secret', 'bitcoin', 'p', testnet=True)
+    with pytest.raises(InvalidURL):
+        s.make_request('getinfo')
+
+
+def test_make_request_connection_error():
+    from transactions.services.daemonservice import BitcoinDaemonService
+    s = BitcoinDaemonService('u', 'p', 'h', 12345, testnet=True)
+    with pytest.raises(ConnectionError):
+        s.make_request('getinfo')
 
 
 def test_regtest_make_request(regtest_daemon_service):

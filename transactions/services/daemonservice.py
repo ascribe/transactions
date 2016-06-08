@@ -24,17 +24,15 @@ class BitcoinDaemonService(BitcoinService):
                                        self._host, self._port)
 
     def make_request(self, method, params=[]):
-        try:
-            data = json.dumps({"jsonrpc": "1.0", "params": params, "id": "", "method": method})
-            r = self._session.post(self._url, data=data, headers={'Content-type': 'application/json'},
-                                   verify=False, timeout=30)
-            return json.loads(r.content)
-        except ValueError as e:
-            print "Some parameters were wrong, please check the request"
-            raise
-        except requests.exceptions.RequestException as e:
-            print "Bitcoin service can not be accessed. Check username, password or host"
-            raise
+        data = json.dumps({"jsonrpc": "1.0", "params": params, "id": "", "method": method})
+        response = self._session.post(
+            self._url,
+            data=data,
+            headers={'Content-type': 'application/json'},
+            verify=False,
+            timeout=30,
+        )
+        return json.loads(response.content)
 
     def get_block_raw(self, block_hash):
         return self.make_request('getblock', (block_hash,))
