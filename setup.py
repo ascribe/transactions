@@ -31,6 +31,10 @@ def find_version(*file_paths):
     raise RuntimeError('Unable to find version string.')
 
 
+with open('README.rst') as readme:
+    long_description = readme.read()
+
+
 install_requires = [
     'bitcoin>=1.1.42',
     'pycoin>=0.62',
@@ -71,7 +75,7 @@ setup(
     packages=['transactions',
               'transactions.services'],
     description='transactions: Bitcoin for Humans',
-    long_description=__doc__,
+    long_description=long_description,
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
