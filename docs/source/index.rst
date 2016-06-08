@@ -13,7 +13,7 @@ to the bitcoin network.
 Installation
 ------------
 
-.. code-block:: python
+.. code-block:: bash
 
     $ pip install transactions
 

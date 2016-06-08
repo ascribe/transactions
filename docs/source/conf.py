@@ -2,6 +2,9 @@
 
 import sphinx_rtd_theme
 
+from transactions import __version__
+
+
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.doctest',
@@ -19,8 +22,8 @@ master_doc = 'index'
 project = u'transactions'
 copyright = u'2016, ascribe GmbH'
 author = u'transactions contributors'
-version = u'0.1'
-release = u'0.1.0'
+version = __version__
+release = __version__
 language = None
 exclude_patterns = []
 pygments_style = 'sphinx'
