@@ -37,7 +37,7 @@ Moving ``10000`` satoshis from ``alice`` to ``bob``:
 
     >>> from transactions import Transactions
     >>> transactions = Transactions(testnet=True)
-    >>> tx = transactions.create(alice (bob, 10000))
+    >>> tx = transactions.create(alice, (bob, 10000))
     >>> tx_signed = transactions.sign(tx, 'alice master secret')
     >>> transactions.push(tx_signed)
 
