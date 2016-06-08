@@ -114,7 +114,7 @@ def test_select_inputs_with_no_funds(transactions, rpcconn):
     alice = rpcconn.getnewaddress()
     with pytest.raises(Exception) as exc:
         transactions._select_inputs(alice, 1)
-    assert exc.value.message == 'No spendable outputs found'
+    assert exc.value.args[0] == 'No spendable outputs found'
 
 
 @pytest.mark.usefixtures('init_blockchain')
@@ -124,14 +124,14 @@ def test_select_inputs_with_insufficient_funds(transactions, rpcconn):
     rpcconn.generate(1)
     with pytest.raises(Exception) as exc:
         transactions._select_inputs(alice, 100000000, min_confirmations=1)
-    assert exc.value.message == 'Not enough balance in the wallet'
+    assert exc.value.args[0] == 'Not enough balance in the wallet'
 
 
 @pytest.mark.usefixtures('init_blockchain')
 def test_create_sign_push_transaction(transactions, rpcconn):
-    alice = BIP32Node.from_master_secret('alice-secret',
+    alice = BIP32Node.from_master_secret(b'alice-secret',
                                          netcode='XTN').bitcoin_address()
-    bob = BIP32Node.from_master_secret('bob-secret',
+    bob = BIP32Node.from_master_secret(b'bob-secret',
                                        netcode='XTN').bitcoin_address()
     rpcconn.importaddress(alice)
     rpcconn.importaddress(bob)
@@ -139,7 +139,7 @@ def test_create_sign_push_transaction(transactions, rpcconn):
     rpcconn.generate(1)
     raw_tx = transactions.create(alice, (bob, 200000000), min_confirmations=1)
     assert raw_tx
-    signed_tx = transactions.sign(raw_tx, 'alice-secret')
+    signed_tx = transactions.sign(raw_tx, b'alice-secret')
     assert signed_tx
     bob_before = rpcconn.getreceivedbyaddress(bob)
     pushed_tx = transactions.push(signed_tx)
@@ -164,7 +164,7 @@ def test_decode_transaction_with_blockr(signed_tx_hex):
 def test_decode_transaction_with_jsonrpc(transactions):
     with pytest.raises(NotImplementedError) as exc:
         transactions.decode('dummy-tx')
-    assert exc.value.message == 'Currently only supported for "blockr.io"'
+    assert exc.value.args[0] == 'Currently only supported for "blockr.io"'
 
 
 def test_get_block_raw(rpcconn, transactions):

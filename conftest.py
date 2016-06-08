@@ -28,17 +28,17 @@ def carol():
 
 @pytest.fixture
 def alice_secret():
-    return 'alice-super-duper-mega-top-secret'
+    return b'alice-super-duper-mega-top-secret'
 
 
 @pytest.fixture
 def alice_hd_wallet():
-    return BIP32Node.from_master_secret('alice-secret', netcode='XTN')
+    return BIP32Node.from_master_secret(b'alice-secret', netcode='XTN')
 
 
 @pytest.fixture
 def bob_hd_wallet():
-    return BIP32Node.from_master_secret('bob-secret', netcode='XTN')
+    return BIP32Node.from_master_secret(b'bob-secret', netcode='XTN')
 
 
 @pytest.fixture
@@ -53,7 +53,8 @@ def bob_hd_address(bob_hd_wallet):
 
 @pytest.fixture
 def random_bip32_wallet():
-    return BIP32Node.from_master_secret(uuid1().get_hex(), netcode='XTN')
+    return BIP32Node.from_master_secret(
+        uuid1().hex.encode('utf-8'), netcode='XTN')
 
 
 @pytest.fixture

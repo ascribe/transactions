@@ -121,21 +121,21 @@ def test_send_to_address(bitcoin_daemon_service, rpcconn):
 def test_push_tx_with_invalid_value(bitcoin_daemon_service):
     with pytest.raises(Exception) as exc:
         bitcoin_daemon_service.push_tx('dummy-tx')
-    assert exc.value.message['message'] == 'TX decode failed'
-    assert exc.value.message['code'] == -22
+    assert exc.value.args[0]['message'] == 'TX decode failed'
+    assert exc.value.args[0]['code'] == -22
 
 
 def test_import_address_with_invalid_value(bitcoin_daemon_service):
     with pytest.raises(Exception) as exc:
         bitcoin_daemon_service.import_address('dummy-addr')
-    assert exc.value.message['message'] == 'Invalid Bitcoin address or script'
-    assert exc.value.message['code'] == -5
+    assert exc.value.args[0]['message'] == 'Invalid Bitcoin address or script'
+    assert exc.value.args[0]['code'] == -5
 
 
 def test_list_transactions_for_invalid_account(bitcoin_daemon_service):
     with pytest.raises(Exception) as exc:
         bitcoin_daemon_service.list_transactions('dummy-addr', account=3)
-    err = exc.value.message
+    err = exc.value.args[0]
     assert err['message'] == 'JSON value is not a string as expected'
     assert err['code'] == -1
 
@@ -143,7 +143,7 @@ def test_list_transactions_for_invalid_account(bitcoin_daemon_service):
 def test_list_unspents_for_invalid_address(bitcoin_daemon_service):
     with pytest.raises(Exception) as exc:
         bitcoin_daemon_service.list_unspents('dummy-addr', 1)
-    err = exc.value.message
+    err = exc.value.args[0]
     assert err['message'] == 'Invalid Bitcoin address: dummy-addr'
     assert err['code'] == -5
 
@@ -151,7 +151,7 @@ def test_list_unspents_for_invalid_address(bitcoin_daemon_service):
 def test_get_raw_transaction_invalid_tx(bitcoin_daemon_service):
     with pytest.raises(Exception) as exc:
         bitcoin_daemon_service.get_raw_transaction('a')
-    err = exc.value.message
+    err = exc.value.args[0]
     assert err['message'] == "parameter 1 must be hexadecimal string (not 'a')"
     assert err['code'] == -8
 
@@ -189,7 +189,7 @@ def test_get_address_for_vout(bitcoin_daemon_service, rpcconn):
 def test_get_address_for_vout_for_invalid_tx(bitcoin_daemon_service):
     with pytest.raises(Exception) as exc:
         bitcoin_daemon_service._get_address_for_vout('a', 0)
-    err = exc.value.message
+    err = exc.value.args[0]
     assert err['message'] == "parameter 1 must be hexadecimal string (not 'a')"
     assert err['code'] == -8
 
@@ -213,7 +213,7 @@ def test_get_value_from_vout(bitcoin_daemon_service, rpcconn):
 def test_get_value_from_vout_for_invalid_tx(bitcoin_daemon_service):
     with pytest.raises(Exception) as exc:
         bitcoin_daemon_service._get_value_from_vout('a', 0)
-    err = exc.value.message
+    err = exc.value.args[0]
     assert err['message'] == "parameter 1 must be hexadecimal string (not 'a')"
     assert err['code'] == -8
 

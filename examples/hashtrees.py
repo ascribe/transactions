@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Inspired by:
 
@@ -5,6 +6,9 @@ Inspired by:
     * https://github.com/richardkiss/pycoin
 
 """
+from __future__ import absolute_import, division, unicode_literals
+from builtins import range
+
 import binascii
 import hashlib
 

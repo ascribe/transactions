@@ -10,3 +10,4 @@ docs/build
 docs/static
 transactions.egg-info/
 dist/
+*.bak

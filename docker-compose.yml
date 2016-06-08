@@ -2,7 +2,19 @@ version: '2'
 
 services:
   tx:
-    build: .
+    build:
+      context: .
+    volumes:
+      - .:/usr/src/app
+    environment:
+      BITCOIN_HOST: bitcoin
+      BITCOIN_RPCUSER: merlin
+      BITCOIN_RPCPASSWORD: secret
+    command: py.test -v
+  tx-py2:
+    build:
+      context: .
+      dockerfile: Dockerfile-py2
     volumes:
       - .:/usr/src/app
     environment:
@@ -19,7 +31,8 @@ services:
       - '18333'
     command: bitcoind -regtest -printtoconsole
   bdocs:
-    build: .
+    build: 
+      context: .
     volumes:
       - .:/usr/src/app/
     working_dir: /usr/src/app/docs

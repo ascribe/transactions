@@ -1,10 +1,14 @@
+# -*- coding: utf-8 -*-
 """
 Bitcoin Daemon Service
+
 """
+from __future__ import absolute_import, division, unicode_literals
+
 import json
 import requests
 
-from transactions.services.service import BitcoinService
+from .service import BitcoinService
 from transactions.utils import bitcoin_to_satoshi
 
 
@@ -32,7 +36,7 @@ class BitcoinDaemonService(BitcoinService):
             verify=False,
             timeout=30,
         )
-        return json.loads(response.content)
+        return response.json()
 
     def get_block_raw(self, block_hash):
         return self.make_request('getblock', (block_hash,))
@@ -151,8 +155,9 @@ class BitcoinDaemonService(BitcoinService):
             return [vout['scriptPubKey']['addresses'][0] for vout in raw_tx['vout'] if vout['n'] == vout_n][0]
         # TODO: Define exceptions for the daemon error messages
         # Coinbase transaction?
+        # TODO review
         except Exception as e:
-            if e.message == {u'message': u'No information available about transaction', u'code': -5}:
+            if e.args and e.args[0] == {u'message': u'No information available about transaction', u'code': -5}:
                 return ''
             else:
                 raise
@@ -163,8 +168,9 @@ class BitcoinDaemonService(BitcoinService):
             return [vout['value'] for vout in raw_tx['vout'] if vout['n'] == vout_n][0]
         # TODO: Define exceptions for the daemon error messages
         # Coinbase transaction?
+        # TODO review
         except Exception as e:
-            if e.message == {u'message': u'No information available about transaction', u'code': -5}:
+            if e.args and e.args[0] == {'message': 'No information available about transaction', 'code': -5}:
                 return 0
             else:
                 raise

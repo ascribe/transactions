@@ -198,4 +198,4 @@ def test_get_block_raw(blockr, block_hash):
 def test_unsuccessful_make_request(blockr):
     with pytest.raises(Exception) as exc:
         blockr.make_request('https://tbtc.blockr.io/api/v1/tx/info/dummy-tx')
-    assert exc.value.message == 'code: 404 message: No records found'
+    assert exc.value.args[0] == 'code: 404 message: No records found'

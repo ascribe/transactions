@@ -1,10 +1,16 @@
-import bitcoin
+# -*- coding: utf-8 -*-
 
+from __future__ import absolute_import, division, unicode_literals
+from builtins import object
+
+import codecs
+
+import bitcoin
 from pycoin.key.BIP32Node import BIP32Node
 from pycoin.encoding import EncodingError
 
-from services.daemonservice import BitcoinDaemonService, RegtestDaemonService
-from services.blockrservice import BitcoinBlockrService
+from .services.daemonservice import BitcoinDaemonService, RegtestDaemonService
+from .services.blockrservice import BitcoinBlockrService
 
 
 SERVICES = ['daemon', 'blockr', 'regtest']
@@ -151,11 +157,12 @@ class Transactions(object):
         """
         netcode = 'XTN' if self.testnet else 'BTC'
 
+        # TODO review
         # check if its a wif
         try:
             BIP32Node.from_text(master_password)
             return bitcoin.signall(tx, master_password)
-        except EncodingError:
+        except (AttributeError, EncodingError):
             # if its not get the wif from the master secret
             return bitcoin.signall(tx, BIP32Node.from_master_secret(master_password, netcode=netcode).subkey_for_path(path).wif())
 
@@ -187,12 +194,17 @@ class Transactions(object):
         return inputs, change
 
     def _op_return_hex(self, op_return):
-        return "6a%x%s" % (len(op_return), op_return.encode('hex'))
+        try:
+            hex_op_return = codecs.encode(op_return, 'hex')
+        except TypeError:
+            hex_op_return = codecs.encode(op_return.encode('utf-8'), 'hex')
+
+        return "6a%x%s" % (len(op_return), hex_op_return.decode('utf-8'))
 
     def estimate_fee(self, n_inputs, n_outputs):
         # estimates transaction fee based on number of inputs and outputs
         estimated_size = 10 + 148 * n_inputs + 34 * n_outputs
-        return (estimated_size / 1000 + 1) * self._min_tx_fee
+        return (estimated_size // 1000 + 1) * self._min_tx_fee
 
     def decode(self, tx):
         """
