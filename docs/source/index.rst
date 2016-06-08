@@ -15,7 +15,7 @@ Installation
 
 .. code-block:: python
 
-    pip install transactions
+    $ pip install transactions
 
 
 Contents
