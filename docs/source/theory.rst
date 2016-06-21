@@ -284,7 +284,7 @@ then create the following transaction:
         coin_hash: '86b9dd63864',
         coin : (
             'pay_to bob_pubkey: b3a364d1a1z',
-            sign(goofy_private_key, 'pay_to bob_pubkey: b3a364d1a1z'),
+            sign(alice_private_key, 'pay_to bob_pubkey: b3a364d1a1z'),
         )
     }
 
@@ -300,7 +300,7 @@ Bob, Alice could transfer the same coin to Carol:
         coin_hash: 'a1z2g5pw34',
         coin : (
             'pay_to carol_pubkey: b3a364d1a1z',
-            sign(goofy_private_key, 'pay_to carol_pubkey: b3a364d1a1z'),
+            sign(alice_private_key, 'pay_to carol_pubkey: b3a364d1a1z'),
         )
     }
 
