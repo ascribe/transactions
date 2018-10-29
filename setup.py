@@ -69,7 +69,7 @@ setup(
     name='transactions',
     version=find_version('transactions', '__init__.py'),
     url='https://github.com/ascribe/transactions',
-    license='Apache Software License',
+    license='Apache2',
     author='Rodolphe Marques',
     author_email='rodolphe@ascribe.io',
     packages=['transactions',
